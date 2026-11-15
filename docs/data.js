@@ -1,32 +1,45 @@
 /* Case study content that's rendered from data — edit copy here.
    Sticky-note colours live in docs/case-study.css (--s1 … --s6, --s0 for "other"). */
 
-/* The problem: what testing Myra showed (Figma 78:753). A missing `src` file shows a
-   "Myra test screenshot" placeholder, and swaps to the image once the file exists.
-   `crop` (optional) frames the screenshot like Figma: width/left in % of the card,
-   shift = how far up to move it, in % of the image's own height.
-   `note` (optional) is a red annotation box over the image, in % of the image. */
+/* The problem: what testing Myra showed (Figma 78:753). Each card has an HTML/CSS
+   illustration (`art`, drawn by renderEvidence in case-study.js) above its title and text. */
 export const evidence = [
   {
     title: "It decides without asking",
     text: "Called a ₹21,598 hotel “best for your kid”, then showed it was ₹5,598 over budget only when locking it — and “Proceed anyway” went through in one tap.",
-    src: "assets/myra/over-budget.png",
-    width: 712, height: 1600,
-    alt: "Myra test chat: after I asked it to lock The Residency Towers, Myra replies that the hotel costs ₹21,598, ₹5,598 over the remaining stay budget of ₹16,000.",
-    crop: { width: 106.09, left: -2.88, shift: 17.8 },
-    note: { left: 3.63, top: 28.15, width: 92.75, height: 8.6, label: "Revealed only at locking" },
+    art: {
+      type: "decides",
+      pick: "Picked for you: a beach hotel",
+      tag: "Best for your kid",
+      price: "₹21,598",
+      alert: "At locking: ₹5,598 over budget",
+      caption: "The parent finds out last",
+    },
   },
   {
     title: "It forgets what it was told",
     text: "Asked for hotels near the beach, it dropped the shortlist and the budget — prices jumped from ₹4–5K to ₹14,202+ a night, without a word.",
-    src: "assets/myra/near-the-beach.png",
-    alt: "Myra test: hotel results for 'near the beach', priced ₹14,202 and up a night, ignoring the earlier shortlist and budget.",
+    art: {
+      type: "forgets",
+      ask: "Show hotels near the beach",
+      toldLabel: "What it was told",
+      told: ["Shortlist of 3", "₹45K budget", "3-year-old", "Pure veg"],
+      result: "Hotels from ₹14,202+ a night",
+      caption: "Context dropped mid-chat",
+    },
   },
   {
     title: "It doesn't show its working",
     text: "Said hotels were “within your budget” when they weren't. “Yes, they can make khichdi”, “5-star” — no sources. No total trip cost.",
-    src: "assets/myra/no-sources.png",
-    alt: "Myra test: hotel cards labelled 'within your budget' and claims like 'they can make khichdi', with no sources and no total trip cost.",
+    art: {
+      type: "blackbox",
+      sub: "no sources · no reasons",
+      claims: [
+        { text: "“Within your budget” ✓", flag: "it wasn't" },
+        { text: "“They can make khichdi” ✓", flag: "no source" },
+      ],
+      caption: "A black box the parent can't check",
+    },
   },
 ];
 

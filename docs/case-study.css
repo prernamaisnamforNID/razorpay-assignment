@@ -60,7 +60,9 @@ a { color: inherit; }
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 
-.icon-12, .icon-13, .icon-14, .icon-15, .icon-16, .icon-18, .icon-20, .icon-24, .icon-28 { flex: none; display: block; }
+.icon-11, .icon-12, .icon-13, .icon-14, .icon-15, .icon-16, .icon-18, .icon-20, .icon-22, .icon-24, .icon-28 { flex: none; display: block; }
+.icon-11 { width: 11px; height: 11px; }
+.icon-22 { width: 22px; height: 22px; }
 .icon-12 { width: 12px; height: 12px; }
 .icon-13 { width: 13px; height: 13px; }
 .icon-20 { width: 20px; height: 20px; }
@@ -238,31 +240,66 @@ a { color: inherit; }
 
 .evidence { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; }
 .ev { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.ev__shot {
-  position: relative; display: block; width: 100%; height: 300px; padding: 0; overflow: hidden;
-  border: 1px solid #e3e6eb; border-radius: 10px; background: #eff1f4;
-  font: inherit; color: inherit; text-align: left;
+
+/* Evidence illustrations (Figma 78:755 / 78:770 / 78:785) — HTML/CSS, centred in a 300px panel */
+.ill {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  height: 300px; padding: 0 24px; overflow: hidden;
+  border: 1px solid #e3e6eb; border-radius: 16px; background: #f3f5f9;
 }
-.ev.has-img .ev__shot { background: #fff; cursor: zoom-in; }
-.ev__ph {
-  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-  font: 400 10px/13px var(--mono); letter-spacing: .02em; text-transform: uppercase; color: #9aa3ad;
+.ill > * { width: 100%; max-width: 300px; margin: 0; }
+.ill > .ill__arrow, .ill > .ill__caption { width: auto; }
+.ill__card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  padding: 12px 14px; border: 1px solid #e3e7ee; border-radius: 12px; background: #fff;
 }
-.ev.has-img .ev__ph { display: none; }
-.ev:not(.has-img) .ev__frame { visibility: hidden; }
-.ev__frame { position: absolute; inset: 0; }
-.ev__frame img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-/* Figma's crop: wider than the card, nudged left, moved up by a share of its own height. */
-.ev__frame--crop { inset: 0 auto auto var(--l); width: var(--w); transform: translateY(var(--shift)); }
-.ev__frame--crop img { height: auto; }
-.ev__note {
-  position: absolute; border: 2px solid #e5383b; border-radius: 8px; background: rgba(229, 56, 59, .06);
+.ill__myra { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: #4665ac; }
+.ill__myra .icon-12 { color: #4665ac; }
+.ill__strong { margin: 0; font-size: 13px; font-weight: 500; color: #1a1a1a; }
+.ill__row { display: flex; align-items: center; gap: 6px; margin: 0; }
+.ill__good { padding: 3px 8px; border-radius: 8px; background: #e8f6ee; font-size: 11px; font-weight: 500; color: var(--green); }
+.ill__price { font-size: 13px; font-weight: 600; color: #008cff; }
+.ill__arrow { font-size: 16px; line-height: 1; color: #9aa3ae; }
+.ill__alert {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; border: 1px solid #f2b8b5; border-radius: 12px; background: #fdecec;
+  font-size: 12px; font-weight: 500; color: #b42318;
 }
-.ev__label {
-  position: absolute; right: -2px; top: calc(100% + 8px);
-  padding: 4px 8px; border-radius: 6px; background: #e5383b; color: #fff;
-  font: 500 10px/13px var(--mono); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap;
+.ill__caption { font: 400 10px/normal var(--mono); letter-spacing: .04em; text-transform: uppercase; color: #6b6b6b; text-align: center; }
+
+.ill__ask {
+  align-self: flex-end; width: auto !important;
+  padding: 8px 12px; border: 1px solid #c9daf8; border-radius: 14px; background: #e6f0ff;
+  font-size: 12px; color: #1a1a1a;
 }
+.ill--forgets > .ill__ask { margin-right: max(0px, calc((100% - 300px) / 2)); }
+.ill__told {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 12px 14px; border: 1px dashed #c5cbd4; border-radius: 12px; background: #fff;
+}
+.ill__label { display: flex; align-items: center; gap: 6px; margin: 0; font: 400 10px/normal var(--mono); letter-spacing: .04em; text-transform: uppercase; color: #9aa3ae; }
+.ill__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.ill__chips li { padding: 3px 8px; border-radius: 8px; background: #f1f2f4; font-size: 11px; color: #a0a6ae; }
+/* The strike is drawn as a line so it can animate in, chip by chip. */
+.ill__chips s { position: relative; text-decoration: none; }
+.ill__chips s::after {
+  content: ""; position: absolute; left: -1px; right: -1px; top: 55%; height: 1px;
+  background: currentColor; transform-origin: left center;
+}
+.ill__result { flex-direction: row; align-items: center; padding-block: 10px; font-size: 12px; color: #4a4a4a; }
+
+.ill__box {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 16px 18px; border-radius: 14px; background: #14161a; color: #8a93a0;
+}
+.ill__box > span { display: flex; flex-direction: column; gap: 2px; }
+.ill__box strong { font-size: 13px; font-weight: 600; color: #fff; }
+.ill__box span span { font-size: 11px; }
+.ill__claims { gap: 6px; padding-block: 10px; }
+.ill__claims li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.ill__claim { font-size: 12px; font-weight: 500; color: #1a1a1a; }
+.ill__flag { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; color: #b42318; }
+
 .ev__num { font: 500 12px/16px var(--mono); letter-spacing: .04em; color: var(--blue); }
 .ev__title { font-size: 16px; font-weight: 500; line-height: 22px; color: var(--ink); }
 .ev__text { font-size: 14px; line-height: 21px; color: var(--muted); }
@@ -585,11 +622,21 @@ a { color: inherit; }
 .reveal.is-in { animation: rise 600ms var(--ease) backwards; }
 .js .board:not(.is-in) .note { opacity: 0; }
 .board.is-in .note { animation: rise 400ms var(--ease) backwards; animation-delay: calc(var(--i, 0) * 30ms); }
-/* Evidence cards stagger 60ms; card 01's red annotation draws in once its screenshot is shown. */
-@keyframes draw { from { opacity: 0; transform: scale(.98); } }
-.js .evidence:not(.is-in) .ev, .js .evidence:not(.is-in) .ev__note { opacity: 0; }
+/* Evidence cards stagger 60ms. Inside: 01's red lock card slides in after 300ms,
+   02's chips are struck through one by one (120ms apart), 03's red flags pop in. */
+@keyframes slide-in { from { opacity: 0; transform: translateY(-10px); } }
+@keyframes strike { from { transform: scaleX(0); } }
+@keyframes pop { 0% { opacity: 0; transform: scale(.5); } 70% { transform: scale(1.12); } }
+.js .evidence:not(.is-in) .ev, .js .evidence:not(.is-in) .ill__alert, .js .evidence:not(.is-in) .ill__flag { opacity: 0; }
+.js .evidence:not(.is-in) .ill__chips s::after { transform: scaleX(0); }
 .evidence.is-in .ev { animation: rise 500ms var(--ease) backwards; animation-delay: calc(var(--i, 0) * 60ms); }
-.evidence.is-in .has-img .ev__note { animation: draw 300ms var(--ease) 350ms backwards; }
+.evidence.is-in .ill__alert { animation: slide-in 400ms var(--ease) 300ms backwards; }
+.evidence.is-in .ill__chips s::after { animation: strike 260ms ease-out backwards; }
+.evidence.is-in .ill__chips li:nth-child(1) s::after { animation-delay: 420ms; }
+.evidence.is-in .ill__chips li:nth-child(2) s::after { animation-delay: 540ms; }
+.evidence.is-in .ill__chips li:nth-child(3) s::after { animation-delay: 660ms; }
+.evidence.is-in .ill__chips li:nth-child(4) s::after { animation-delay: 780ms; }
+.evidence.is-in .ill__flag { animation: pop 360ms var(--ease) backwards; animation-delay: calc(450ms + var(--i, 0) * 120ms); }
 /* How AI works / What's next: cards fade + rise in, 60ms apart ([data-stagger] children, --i) */
 .js [data-stagger]:not(.is-in) > * { opacity: 0; }
 [data-stagger].is-in > * { animation: rise 500ms var(--ease) backwards; animation-delay: calc(var(--i, 0) * 60ms); }
@@ -597,9 +644,11 @@ a { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .js .reveal:not(.is-in), .js .board:not(.is-in) .note,
-  .js .evidence:not(.is-in) .ev, .js .evidence:not(.is-in) .ev__note,
+  .js .evidence:not(.is-in) .ev, .js .evidence:not(.is-in) .ill__alert, .js .evidence:not(.is-in) .ill__flag,
   .js [data-stagger]:not(.is-in) > * { opacity: 1; }
-  .reveal.is-in, .board.is-in .note, .evidence.is-in .ev, .evidence.is-in .has-img .ev__note,
+  .js .evidence:not(.is-in) .ill__chips s::after { transform: none; }
+  .reveal.is-in, .board.is-in .note, .evidence.is-in .ev, .evidence.is-in .ill__alert,
+  .evidence.is-in .ill__chips s::after, .evidence.is-in .ill__flag,
   [data-stagger].is-in > * { animation: none; }
   .toc__star, .toc__label, .toc__link, .note, .btn, .btn .icon-18, .tip, .cover__btn, .cover__play { transition: none; }
 }
@@ -632,6 +681,7 @@ a { color: inherit; }
 
 /* ── < 900px: title row stacks, design areas 2 × 2 ───────── */
 @media (max-width: 899.98px) {
+  .evidence { grid-template-columns: 1fr; gap: 32px; }
   .title-row { flex-direction: column; align-items: flex-start; gap: 20px; }
   .moment__top { flex-direction: column; gap: 20px; }
   .moment__points { padding-top: 0; }

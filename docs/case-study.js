@@ -16,44 +16,55 @@ const exists = (url) => fetch(url, { method: "HEAD", cache: "no-store" }).then((
 
 /* The problem: three evidence cards. Each starts as a placeholder and swaps to the
    screenshot once it loads; a loaded screenshot opens full size in the lightbox. */
+/* The problem: three evidence cards, each with an HTML/CSS illustration (Figma 78:753). */
+const myraTag = `<span class="ill__myra">${icon("spark", "icon-12")}Myra</span>`;
+
+const illustrations = {
+  // 01 — Myra's pick, then the over-budget surprise at locking.
+  decides: (a) => `
+    <div class="ill__card">
+      ${myraTag}
+      <p class="ill__strong">${esc(a.pick)}</p>
+      <p class="ill__row"><span class="ill__good">${esc(a.tag)}</span><span class="ill__price">${esc(a.price)}</span></p>
+    </div>
+    <span class="ill__arrow" aria-hidden="true">↓</span>
+    <p class="ill__alert">${icon("lock", "icon-16")}${esc(a.alert)}</p>
+    <p class="ill__caption">${esc(a.caption)}</p>`,
+
+  // 02 — what it was told gets struck through, then a pricey result.
+  forgets: (a) => `
+    <p class="ill__ask">${esc(a.ask)}</p>
+    <div class="ill__told">
+      <p class="ill__label">${icon("ghost", "icon-14")}${esc(a.toldLabel)}</p>
+      <ul class="ill__chips">
+        ${a.told.map((t, i) => `<li style="--i:${i}"><s>${esc(t)}</s></li>`).join("")}
+      </ul>
+    </div>
+    <p class="ill__card ill__result">${myraTag}<span>${esc(a.result)}</span></p>
+    <p class="ill__caption">${esc(a.caption)}</p>`,
+
+  // 03 — a black box, then claims with no reasons behind them.
+  blackbox: (a) => `
+    <div class="ill__box">
+      ${icon("circle-help", "icon-22")}
+      <span><strong>Myra</strong><span>${esc(a.sub)}</span></span>
+    </div>
+    <span class="ill__arrow" aria-hidden="true">↓</span>
+    <ul class="ill__card ill__claims">
+      ${a.claims.map((c, i) => `
+        <li><span class="ill__claim">${esc(c.text)}</span><span class="ill__flag" style="--i:${i}">${icon("circle-alert", "icon-11")}${esc(c.flag)}</span></li>`).join("")}
+    </ul>
+    <p class="ill__caption">${esc(a.caption)}</p>`,
+};
+
 function renderEvidence() {
-  const list = $("[data-evidence]");
-  list.innerHTML = evidence.map((e, i) => {
-    const c = e.crop, n = e.note;
-    const frame = c ? ` ev__frame--crop" style="--w:${c.width}%;--l:${c.left}%;--shift:-${c.shift}%` : "";
-    const size = e.width ? ` width="${e.width}" height="${e.height}"` : "";
-    return `
+  $("[data-evidence]").innerHTML = evidence.map((e, i) => `
     <li class="ev" style="--i:${i}">
-      <button class="ev__shot" type="button" disabled>
-        <span class="ev__ph" aria-hidden="true">${icon("image", "icon-28")}<span>Myra test screenshot</span></span>
-        <span class="ev__frame${frame}">
-          <span class="sr-only">Open full size: </span>
-          <img src="${e.src}"${size} alt="${esc(e.alt)}" loading="lazy" decoding="async">
-          ${n ? `<span class="ev__note" style="left:${n.left}%;top:${n.top}%;width:${n.width}%;height:${n.height}%" aria-hidden="true"><span class="ev__label">${esc(n.label)}</span></span>` : ""}
-        </span>
-      </button>
+      <div class="ill ill--${e.art.type}">${illustrations[e.art.type](e.art)}</div>
       <p class="ev__num">${String(i + 1).padStart(2, "0")}</p>
       <h3 class="ev__title">${esc(e.title)}</h3>
       <p class="ev__text">${esc(e.text)}</p>
-    </li>`;
-  }).join("");
-
-  $$(".ev", list).forEach((li) => {
-    const btn = $(".ev__shot", li), img = $("img", li);
-    const ready = () => { li.classList.add("has-img"); btn.disabled = false; };
-    const missing = () => $(".ev__frame", li).remove();
-    if (img.complete) (img.naturalWidth ? ready() : missing());
-    else {
-      img.addEventListener("load", ready, { once: true });
-      img.addEventListener("error", missing, { once: true });
-    }
-    btn.addEventListener("click", () => {
-      const big = document.createElement("img");
-      big.src = img.currentSrc || img.src;
-      big.alt = img.alt;
-      openLightbox(big);
-    });
-  });
+    </li>`).join("");
 }
 
 function renderLegend() {
