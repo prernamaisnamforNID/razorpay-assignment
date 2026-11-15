@@ -13,6 +13,8 @@ const initial = () => ({
   plan: { family: "todo", places: "todo", travel: "todo", stay: "todo", days: "todo" }, // plan checklist
   jumpTo: null,         // tracker jump into the middle of a chat (e.g. "h03e")
   visited: [],          // steps reached at least once (e.g. "h06a", "h06b") — ticked in the tracker
+  chatNext: null,       // what the H03 chat does when it's shown again, e.g. { type: "travel", text, source } from the map
+  booked: { hotel: false, cab: false }, // H09 bookings
 });
 
 const state = initial();

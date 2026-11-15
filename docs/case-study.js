@@ -332,7 +332,7 @@ function wireNav() {
 /* ── Reveal on enter (once) ──────────────────────────────── */
 
 function wireReveal() {
-  const items = [...$$(".reveal"), $("[data-board]"), $("[data-evidence]")];
+  const items = [...$$(".reveal"), $("[data-board]"), $("[data-evidence]"), ...$$("[data-stagger]")];
   if (reduceMotion.matches || !("IntersectionObserver" in window)) {
     items.forEach((el) => el.classList.add("is-in"));
     return;

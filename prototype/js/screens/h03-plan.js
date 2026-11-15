@@ -1,8 +1,15 @@
 /* H03 chat, continued — H03e "Where to start" (Figma 53:2), H04 Pondicherry (91:2),
+   H05 sheet (32:128), H06a beach fit (33:2), H07a getting there (96:2),
    H08a what I know vs missing (53:115), H08b rough draft (53:236). Used by h03-chat-summary.js.
    `c` is the chat's shared toolkit: add, userSays, myraTyping, run, instant, stage,
    setBusy, isBusy, record, ctx, input, log, track, openFamilyEdit, scrollTo. */
-import { paths, destination, beachesPage as beachesCopy, beachFit, itinerary, draft, planCopy, family as fam } from "../../data/journey.js";
+import { paths, destination, beachesPage as beachesCopy, beachFit, hotels, travel, finalPlan as finalCopy, planSteps, itinerary, draft, planCopy, family as fam } from "../../data/journey.js";
+import { checkedStrip, modeCard, leftOutRow } from "../components/travel.js";
+import { hotelCard } from "../components/hotels.js";
+import { finalDay, readyCard, bookingSheet } from "../components/final-plan.js";
+import { html, esc } from "../dom.js";
+import { envToast, pulseRestart } from "../env-toast.js";
+import { reduceMotion } from "../components/chat.js";
 import { getState, setState, setPlan, markVisited } from "../state.js";
 import { systemNote, fitMeter, mapCard, savedList, myraTip } from "../components/beach-fit.js";
 import { openSheet } from "../components/sheet.js";
@@ -12,8 +19,8 @@ import { myraWorking } from "../components/myra-working.js";
 import { pathOptions, infoHint, knownCard, choiceChips, draftLabel, dayCard, stagger } from "../components/itinerary.js";
 import { planningStrip, destinationCard, rainNote } from "../components/destination.js";
 
-/* Paths built on another screen. "places" (H04) and "itinerary" (H08) stay in this chat. */
-const SCREEN = { travel: "h07a", map: "h06b" };
+/* Built on another screen: the full map (H06b). Everything else stays in this chat. */
+const SCREEN = { map: "h06b" };
 
 export function planFlow(c) {
   let itineraryShown = false;
@@ -53,6 +60,7 @@ export function planFlow(c) {
       await c.userSays(said, source);
       return showDestination();
     }
+    if (id === "travel") return startTravel(text, source);
     c.record({ type: "path", id, text, source });
     if (id === "itinerary") {
       await c.userSays(text, source);
@@ -116,9 +124,197 @@ export function planFlow(c) {
     c.add(myraTip(beachFit.tip));
     await c.run.wait(ms("betweenBlocks"));
     c.add(myraText(beachFit.ask));
-    c.add(choiceChips(beachFit.chips, { onChoose: () => c.ctx.toast(beachFit.chipToast) }));
+    c.add(choiceChips(beachFit.chips, {
+      onChoose: (chip) => (chip.id === "hotels" ? showHotels(chip.label, "tapped") : c.ctx.toast(beachFit.chipToast)),
+    }));
     c.stage({ substep: "fit" });
     markVisited("h06a");
+    c.setBusy(false);
+  }
+
+  /* H06e — hotels around the saved beaches, checked against the ₹16K stay budget.
+     From the H06a chip or prompt, or the map's "Show hotels around these beaches". */
+  let hotelsShown = false, hotelKept = false;
+  async function showHotels(text, source) {
+    if (c.isBusy()) return;
+    if (hotelsShown) return c.scrollTo(".hotel");
+    hotelsShown = true;
+    c.record({ type: "hotels", text, source });
+    c.setBusy(true);
+    await c.userSays(text, source);
+    if (getState().savedBeaches.length) setPlan("places", "done");
+    setPlan("stay", "active");
+
+    c.add(myraLabel());
+    const working = c.add(myraWorking(hotels.working));
+    working.showStep(0, true);
+    await c.run.wait(ms("hotelsWorking"));
+    await working.finish(ms("workingCollapse"), c.instant);
+    await c.run.wait(ms("beforeReply"));
+
+    c.add(myraText(hotels.intro));
+    for (const s of hotels.stays) {
+      await c.run.wait(ms("betweenBlocks"));
+      c.add(hotelCard(s, hotels));
+    }
+    await c.run.wait(ms("betweenBlocks"));
+    c.add(myraText(hotels.ask));
+    c.add(choiceChips(hotels.chips, { onChoose: (chip) => hotelChoice(chip.id, chip.label, "tapped") }));
+    c.stage({ substep: "hotels" });
+    markVisited("h06e");
+    c.setBusy(false);
+  }
+
+  /* "Find a cheaper one" → toast. "Keep it anyway" → Myra confirms nothing is booked. */
+  async function hotelChoice(id, text, source) {
+    if (id === "cheaper") return c.ctx.toast(hotels.cheaperToast);
+    if (c.isBusy() || hotelKept || !hotelsShown) return;
+    hotelKept = true;
+    c.record({ type: "keepHotel", text, source });
+    c.setBusy(true);
+    const row = [...c.log.querySelectorAll(".chat-actions")].at(-1);
+    if (row) await fadeOut(row, c.instant);
+    await c.userSays(text, source);
+    await c.myraTyping();
+    c.add(myraText(hotels.kept));
+    c.stage({ substep: "hotelKept" });
+    c.setBusy(false);
+  }
+
+  /* The skip-ahead note on the canvas, shown the moment the H09 prompt is tapped. */
+  function announceFinalPlan() {
+    envToast(finalCopy.skipToast);
+  }
+
+  /* H09 — the final plan (the demo's skip-ahead prompt after H06e), then booking.
+     Every checklist step turns done, a loader ticks through, then three day cards
+     and "Ready to book". */
+  let finalShown = false, ready = null, booking = null;
+  async function showFinalPlan(text, source) {
+    if (c.isBusy() || finalShown) return;
+    finalShown = true;
+    c.record({ type: "finalPlan", text, source });
+    c.setBusy(true);
+    await c.userSays(text, source);
+    setState({ travelMode: "cab" });
+
+    // The checklist turns done one step after another (80ms apart, each pops).
+    const paced = !c.instant && !reduceMotion.matches;
+    for (const s of planSteps) {
+      if (getState().plan[s.id] === "done") continue;
+      setPlan(s.id, "done");
+      if (paced) await c.run.wait(ms("planStagger"));
+    }
+
+    c.add(myraLabel());
+    const working = c.add(myraWorking(finalCopy.working));
+    for (let i = 0; i < finalCopy.working.steps.length; i++) {
+      working.showStep(i, c.instant);
+      await c.run.wait(ms("finalStep"));
+    }
+    await working.finish(ms("workingCollapse"), c.instant);
+    await c.run.wait(ms("beforeReply"));
+
+    c.add(myraText(finalCopy.intro));
+    const days = finalCopy.days.map((d) => c.add(finalDay(d), "none"));
+    if (!c.instant) stagger(days, ms("dayStagger"));
+    await c.run.wait(ms("betweenBlocks"));
+    ready = c.add(readyCard(finalCopy.book, { onBook: openBooking }));
+    if (!c.instant) ready.grow();
+    c.add(html(`<p class="final-note">${esc(finalCopy.nothingBooked)}</p>`));
+    c.input.setAskAbout(finalCopy.quickLabel, finalCopy.quick, () => c.ctx.toast(finalCopy.quickToast));
+    c.input.setPlaceholder(fam.inputPlaceholder);
+    c.stage({ substep: "final" });
+    markVisited("h09");
+    c.setBusy(false);
+  }
+
+  /* "Book hotel" / "Book cab" → a sheet to confirm. */
+  function openBooking(id) {
+    if (c.isBusy() || booking || getState().booked[id]) return;
+    const item = finalCopy.book.items.find((i) => i.id === id);
+    const body = bookingSheet(item, finalCopy, {
+      onConfirm: () => { booking?.close(); confirmBooking(id); },
+      onLater: () => booking?.close(),
+    });
+    booking = openSheet({ title: item.sheet.title, body, onClose: () => { booking = null; } });
+  }
+
+  async function confirmBooking(id) {
+    if (!ready || (!c.instant && getState().booked[id])) return;
+    const item = finalCopy.book.items.find((i) => i.id === id);
+    c.record({ type: "book", id });
+    setState({ booked: { ...getState().booked, [id]: true } });
+    ready.setBooked(id);
+    if (!c.instant) c.ctx.toast(item.toast);
+    const b = getState().booked;
+    if (!(b.hotel && b.cab)) return;
+
+    // Both booked: Myra wraps up, and the prototype ends.
+    c.setBusy(true);
+    await c.run.wait(ms("betweenBlocks"));
+    await c.myraTyping();
+    c.add(myraText(finalCopy.allBooked));
+    c.stage({ substep: "booked" });
+    c.setBusy(false);
+    if (!c.instant) {
+      envToast(finalCopy.endToast, 5000);
+      pulseRestart();
+    }
+  }
+
+  /* H07a — getting there, against the budget. From the map's "Show hotels…", the
+     "How should we get there?" prompt, the H03e card, H08 chips/slots or the checklist. */
+  let travelShown = false, flown = false;
+  async function startTravel(text, source) {
+    if (c.isBusy()) return;
+    if (travelShown) return c.scrollTo(".mode");
+    c.record({ type: "travel", text, source });
+    c.setBusy(true);
+    await c.userSays(text, source);
+    return showTravel();
+  }
+
+  async function showTravel() {
+    c.setBusy(true);
+    travelShown = true;
+    if (getState().savedBeaches.length) setPlan("places", "done");
+    setPlan("travel", "active");
+    await c.myraTyping();
+    c.add(myraText(travel.intro));
+    await c.run.wait(ms("betweenBlocks"));
+    c.add(checkedStrip(travel.checked));
+    for (const m of travel.modes) {
+      await c.run.wait(ms("betweenBlocks"));
+      const card = c.add(modeCard(m, travel.budget, { onAction: modeAction }));
+      if (!c.instant) card.grow();
+    }
+    await c.run.wait(ms("betweenBlocks"));
+    c.add(leftOutRow(travel.leftOut, { onShow: () => c.ctx.toast(travel.toast) }));
+    c.add(myraTip(travel.tip));
+    c.input.setAskAbout(travel.askLabel, travel.ask, (item) => (item.fly ? fly(travel.flyText, "tapped") : c.ctx.toast(travel.toast)));
+    c.input.setPlaceholder(travel.inputPlaceholder);
+    c.stage({ substep: "travel" });
+    markVisited("h07a");
+    c.setBusy(false);
+  }
+
+  function modeAction(id) {
+    if (id === "chooseDrive") return c.ctx.toast(travel.endToast);
+    c.ctx.toast(travel.toast);
+  }
+
+  /* Over budget: the parent picks Fly. */
+  async function fly(text, source) {
+    if (c.isBusy() || flown || !travelShown) return;
+    flown = true;
+    c.record({ type: "fly", text, source });
+    c.setBusy(true);
+    await c.userSays(text, source);
+    await c.myraTyping();
+    c.add(myraText(travel.overBudget));
+    c.add(choiceChips(travel.overChips, { onChoose: () => c.ctx.toast(travel.endToast) }));
+    c.stage({ substep: "overBudget" });
     c.setBusy(false);
   }
 
@@ -172,7 +368,11 @@ export function planFlow(c) {
       c.add(myraText(draft.kept));
       return c.setBusy(false);
     }
-    await goTo(id, { afterBubble: true });
+    if (id === "travel") {
+      if (!travelShown) return showTravel();
+      c.setBusy(false);
+      return c.scrollTo(".mode");
+    }
     c.setBusy(false);
   }
 
@@ -201,15 +401,15 @@ export function planFlow(c) {
   function openSlot(open) {
     if (open.go === "stay") return c.ctx.toast(planCopy.stayToast);
     if (open.go === "places") return choosePath("places", destination.userText, "tapped");
-    goTo(open.go);
+    if (open.go === "travel") return startTravel(travel.userText, "tapped");
   }
 
   /* Checklist taps. */
   function planStep(id) {
     if (id === "family") return c.openFamilyEdit(null);
-    if (id === "stay") return c.ctx.toast(planCopy.stayToast);
+    if (id === "stay") return hotelsShown ? c.scrollTo(".hotel") : c.ctx.toast(planCopy.stayToast);
     if (id === "places") return choosePath("places", destination.userText, "tapped");
-    if (id === "travel") return goTo("travel");
+    if (id === "travel") return startTravel(travel.userText, "tapped");
     if (id === "days") {
       if (itineraryShown) return c.scrollTo(".known, .day");
       const opt = paths.options.find((o) => o.id === "itinerary");
@@ -219,6 +419,8 @@ export function planFlow(c) {
 
   return {
     whereToStart, choosePath, choose, explore, planStep, openBeaches, decideBeaches,
+    showHotels, hotelChoice, announceFinalPlan, showFinalPlan, confirmBooking, startTravel, fly,
+    closeBooking: () => booking?.close(),
     get beachesOpen() { return !!beaches; },
     closeBeaches: () => beaches?.close(),
   };

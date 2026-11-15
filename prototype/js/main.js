@@ -7,6 +7,7 @@ import { initPanels, pulsePrompts } from "./panels.js";
 import { initCoach, showCoach, hideCoach } from "./coach.js";
 import { initStage } from "./stage.js";
 import { initToast, toast } from "./toast.js";
+import { hideEnvToast } from "./env-toast.js";
 
 const app = document.querySelector(".app");
 
@@ -37,6 +38,7 @@ function finish() {
 }
 
 function restart() {
+  hideEnvToast();
   resetState("happy");
   reset(["h01"]);
   showCoach();
@@ -56,6 +58,7 @@ function jumpTo(id) {
 /* Open a tracker step. A stage inside a chat opens its screen and fast-forwards the
    conversation there; a screen with a `chatStage` fast-forwards the chat under it. */
 function openStep(id) {
+  hideEnvToast();
   const step = steps[stepIndex(id)];
   if (step.host) {
     setState({ jumpTo: id });

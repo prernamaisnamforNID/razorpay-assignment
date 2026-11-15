@@ -103,6 +103,65 @@
 .myra-tip p { flex: 1; margin: 0; font: 400 13px/19px var(--font-myra); color: var(--text-body); }
 
 /* ======================================================================
+   H06e · Hotels around your beaches (Figma 98:2, in the H03 chat)
+   ====================================================================== */
+.hotel {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: #fff;
+}
+.hotel.is-over { border-color: #F2B8B5; }
+.hotel__photo { height: 120px; background: linear-gradient(#D1DBEB, #EDE5D6); }
+.hotel__body { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 14px 14px; }
+.hotel__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; align-self: stretch; }
+.hotel__name { margin: 0; font: 600 16px/normal var(--font-myra); color: #000; }
+.hotel__price { display: flex; flex-direction: column; align-items: flex-end; margin: 0; white-space: nowrap; }
+.hotel__amount { font: 600 15px/normal var(--font-myra); color: var(--blue); }
+.hotel.is-over .hotel__amount { color: var(--bad); }
+.hotel__nights { font: 400 10px/normal var(--font-myra); color: var(--text-3); }
+.hotel__over {
+  margin: 0;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: var(--bad-bg);
+  font: 500 12px/normal var(--font-myra);
+  color: var(--bad);
+}
+.hotel__label { margin: 0; font: 500 10px/normal var(--font-myra); text-transform: uppercase; color: var(--text-2); }
+.hotel__near, .hotel__fits { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.hotel__near li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px 4px 4px;
+  border-radius: 12px;
+  background: var(--blue-light);
+  font: 400 11px/normal var(--font-myra);
+  color: var(--text-body);
+  white-space: nowrap;
+}
+.hotel__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: var(--blue);
+  font: 600 10px/1 var(--font-myra);
+  color: #fff;
+}
+.hotel__fits li {
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: var(--good-bg);
+  font: 500 11px/normal var(--font-myra);
+  color: var(--good);
+  white-space: nowrap;
+}
+
+/* ======================================================================
    Maps — shared labels and pins (positions in px from data/journey.js)
    ====================================================================== */
 .map-label { position: absolute; font: 500 10px/normal var(--font-myra); white-space: nowrap; pointer-events: none; }

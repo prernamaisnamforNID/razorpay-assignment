@@ -64,7 +64,9 @@ function renderPrompts(host, state) {
     return;
   }
   const prompts = promptsFor(step, scenario, substep, state);
-  const hint = steps[stepIndex(step)]?.hint || "Tap inside the app for this step.";
+  // A chat stage (e.g. H07a inside the H03 chat) has its own hint.
+  const stage = steps.find((s) => s.host === step && s.substeps.includes(substep));
+  const hint = stage?.hint || steps[stepIndex(step)]?.hint || "Tap inside the app for this step.";
   const n = promptNoteFor(step, substep);
   const note = n ? `<p class="prompts__note"><span aria-hidden="true">ⓘ</span> ${esc(n)}</p>` : "";
   if (busy) {

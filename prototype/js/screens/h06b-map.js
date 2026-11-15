@@ -1,9 +1,17 @@
 /* H06b v2 · Full-screen map: saved beaches → hotels around them (Figma 94:2).
    Opened from "Open map" on the H06a map card; Back returns to the chat.
+   "Show hotels around these beaches" goes back to the chat, which continues with H06e;
+   the "How should we get there?" prompt continues with H07a instead.
    Copy + pin positions: data/journey.js `beachMap`. */
 import { html, esc } from "../dom.js";
 import { beachMap as c } from "../../data/journey.js";
-import { markVisited } from "../state.js";
+import { markVisited, setState } from "../state.js";
+
+/* Back to the chat, and tell it what to do next ("hotels" or "travel"). */
+function backToChat(ctx, type, text, source) {
+  setState({ chatNext: { type, text, source } });
+  ctx.back();
+}
 
 const icon = (name, size) =>
   `<img class="icon" src="assets/icons/${name}.svg" width="${size}" height="${size}" alt="" draggable="false">`;
@@ -51,7 +59,7 @@ function template() {
       <ul class="bmap__checks">
         ${c.card.checks.map((t) => `<li><span aria-hidden="true">✓</span> ${esc(t)}</li>`).join("")}
       </ul>
-      <button class="bmap__primary tap" type="button" data-hotels>${esc(c.card.primary)}</button>
+      <button class="bmap__primary tap" type="button" data-to-hotels>${esc(c.card.primary)}</button>
       <div class="bmap__near">
         ${c.card.near.map((t) => `<button class="chip bmap__near-btn tap" type="button" data-hotels>${esc(t)}</button>`).join("")}
       </div>
@@ -68,9 +76,14 @@ export default {
     markVisited("h06b");
     el.addEventListener("click", (e) => {
       if (e.target.closest("[data-back]")) return ctx.back();
+      if (e.target.closest("[data-to-hotels]")) return backToChat(ctx, "hotels", c.card.primary, "tapped");
       if (e.target.closest("[data-hotels]")) return ctx.toast(c.hotelsToast);
       if (e.target.closest("[data-soon]")) return ctx.toast(c.toast);
     });
     return el;
+  },
+
+  onPrompt(text, { ctx }) {
+    backToChat(ctx, "travel", text, "typed");
   },
 };

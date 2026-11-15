@@ -8,7 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 6v12M17.2 9 6.8 15M6.8 9l10.4 6' stroke='%232F7BEA' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Hedvig+Letters+Serif&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Hedvig+Letters+Serif&family=Instrument+Serif:ital@1&display=swap">
   <link rel="stylesheet" href="docs/case-study.css">
   <script>document.documentElement.classList.add("js");</script>
   <script type="module" src="docs/case-study.js"></script>
@@ -17,6 +17,7 @@
   <!-- Icon sprite (Lucide-style strokes; colour = currentColor). -->
   <svg class="sprite" aria-hidden="true" focusable="false">
     <symbol id="i-asterisk" viewBox="0 0 24 24"><path d="M12 6v12M17.196 9 6.804 15M6.804 9l10.392 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" vector-effect="non-scaling-stroke"/><circle cx="12" cy="7" r="4" vector-effect="non-scaling-stroke"/></g></symbol>
     <symbol id="i-phone" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" vector-effect="non-scaling-stroke"/><path d="M12 18h.01" vector-effect="non-scaling-stroke"/></g></symbol>
     <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></symbol>
     <symbol id="i-users" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" vector-effect="non-scaling-stroke"/><circle cx="9" cy="7" r="4" vector-effect="non-scaling-stroke"/></g></symbol>
@@ -60,9 +61,6 @@
         <li><a class="toc__link" href="#directions"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">Directions</span></a></li>
         <li><a class="toc__link" href="#solution"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">Solution</span></a></li>
         <li><a class="toc__link" href="#how-ai-works"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">How AI works</span></a></li>
-        <li><a class="toc__link" href="#states"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">States &amp; edge cases</span></a></li>
-        <li><a class="toc__link" href="#ai-in-process"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">AI in my process</span></a></li>
-        <li><a class="toc__link" href="#decisions"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">Decisions &amp; tradeoffs</span></a></li>
         <li><a class="toc__link" href="#whats-next"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">What's next</span></a></li>
       </ol>
       <a class="toc__top" href="#top"><span aria-hidden="true">↑</span> Back to top</a>
@@ -332,25 +330,103 @@
           </div>
         </div>
       </section>
-      <section class="section section--soon reveal" id="how-ai-works" aria-labelledby="how-ai-title">
-        <h2 class="eyebrow" id="how-ai-title"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>How AI works</h2>
-        <p class="soon">Coming soon — what Myra does, and how the parent stays in control.</p>
+      <!-- 7 · How AI works (Figma 86:1904) -->
+      <section class="section reveal" id="how-ai-works" aria-labelledby="how-ai-title">
+        <header class="section__head section__head--tight">
+          <p class="eyebrow"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>How AI works</p>
+          <h2 class="section__title" id="how-ai-title">Myra does the legwork. The parent makes the call.</h2>
+          <p class="section__lede">Each part of the redesign answers one way the parent was left out of today's Myra.</p>
+        </header>
+
+        <ol class="fixes" data-stagger>
+          <li class="fix" style="--i:0">
+            <div class="fix__text">
+              <p class="fix__was"><svg class="icon-13" aria-hidden="true"><use href="#i-x"/></svg>Current : It forgets what it was told</p>
+              <h3 class="fix__title"><svg class="icon-20" aria-hidden="true"><use href="#i-check"/></svg>It remembers and shows what it's using</h3>
+              <p class="fix__desc">“Here's what I understood” after every answer, removable pills, a pinned plan checklist and a “Planning around” strip carried into every step.</p>
+            </div>
+            <img class="fix__visual" src="docs/assets/how-ai/remembers.png" width="520" height="640" loading="lazy" decoding="async"
+                 alt="Myra chat: after the parent describes their daughter, Myra shows what it understood as removable pills — naps after lunch, sleeps on long journeys, motion sick on winding roads — then asks about the grandparents.">
+          </li>
+          <li class="fix" style="--i:1">
+            <div class="fix__text">
+              <p class="fix__was"><svg class="icon-13" aria-hidden="true"><use href="#i-x"/></svg>Current : It decides without asking</p>
+              <h3 class="fix__title"><svg class="icon-20" aria-hidden="true"><use href="#i-check"/></svg>It asks first, then waits</h3>
+              <p class="fix__desc">Confirm points before planning (trip, then family), Skip for any question, three ways to start, and nothing locked in until the parent says so.</p>
+            </div>
+            <img class="fix__visual" src="docs/assets/how-ai/asks-first.png" width="520" height="640" loading="lazy" decoding="async"
+                 alt="Myra's family summary: 5 people and 9 things to keep in mind, with “Does this cover everyone?” and the choices Looks right or Change something.">
+          </li>
+          <li class="fix" style="--i:2">
+            <div class="fix__text">
+              <p class="fix__was"><svg class="icon-13" aria-hidden="true"><use href="#i-x"/></svg>Current: It doesn't show its working</p>
+              <h3 class="fix__title"><svg class="icon-20" aria-hidden="true"><use href="#i-check"/></svg>It informs its working and its gaps</h3>
+              <p class="fix__desc">“Checked against” on every option, left-out options with reasons, estimates labelled “est.”, and honest gaps: “I don't know your places yet.”</p>
+            </div>
+            <img class="fix__visual" src="docs/assets/how-ai/shows-working.png" width="520" height="640" loading="lazy" decoding="async"
+                 alt="Asked for an itinerary early, Myra lists what it knows — dates, who's going, the ₹45K budget — and what's still missing: places, how you're getting there, where you're staying.">
+          </li>
+        </ol>
+
+        <div class="roles" data-stagger>
+          <div class="role role--myra" style="--i:0">
+            <h3 class="role__title"><svg class="icon-18" aria-hidden="true"><use href="#i-spark"/></svg>Myra does the legwork</h3>
+            <ul class="role__list">
+              <li>Finds options and checks each against every person</li>
+              <li>Explains why — and what it left out</li>
+              <li>Keeps track of the plan across sessions</li>
+            </ul>
+          </div>
+          <div class="role role--parent" style="--i:1">
+            <h3 class="role__title"><svg class="icon-18" aria-hidden="true"><use href="#i-user"/></svg>The parent makes the call</h3>
+            <ul class="role__list">
+              <li>Confirms what Myra heard, or edits it</li>
+              <li>Chooses where to start and what to keep</li>
+              <li>Decides what gets locked in, and when</li>
+            </ul>
+          </div>
+        </div>
       </section>
-      <section class="section section--soon reveal" id="states" aria-labelledby="states-title">
-        <h2 class="eyebrow" id="states-title"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>States &amp; edge cases</h2>
-        <p class="soon">Coming soon — loading, empty, error, over budget and over capacity.</p>
-      </section>
-      <section class="section section--soon reveal" id="ai-in-process" aria-labelledby="ai-process-title">
-        <h2 class="eyebrow" id="ai-process-title"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>AI in my process</h2>
-        <p class="soon">Coming soon — where AI helped, and what I accepted, changed or rejected.</p>
-      </section>
-      <section class="section section--soon reveal" id="decisions" aria-labelledby="decisions-title">
-        <h2 class="eyebrow" id="decisions-title"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>Decisions &amp; tradeoffs</h2>
-        <p class="soon">Coming soon — the key calls and what they cost.</p>
-      </section>
-      <section class="section section--soon reveal" id="whats-next" aria-labelledby="next-title">
-        <h2 class="eyebrow" id="next-title"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>What's next</h2>
-        <p class="soon">Coming soon — what I'd do with more time.</p>
+
+      <!-- 8 · What's next (Figma 87:980) -->
+      <section class="section reveal" id="whats-next" aria-labelledby="next-title">
+        <header class="section__head section__head--next">
+          <p class="eyebrow"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>What's next</p>
+          <h2 class="section__title" id="next-title">What I'd do with more time.</h2>
+        </header>
+
+        <ol class="next" data-stagger>
+          <li class="next__card" style="--i:0">
+            <span class="next__num">01</span>
+            <h3 class="next__title">Cover the other edge cases</h3>
+            <p class="next__text">Only over budget is prototyped. Next: too many beaches, nothing saved, prices that don't load, and a family member's needs changing mid-plan.</p>
+          </li>
+          <li class="next__card" style="--i:1">
+            <span class="next__num">02</span>
+            <h3 class="next__title">Prototype the full booking</h3>
+            <p class="next__text">Book hotel and cab in one flow: one total, clear cancellation, what happens if one booking fails, and a plan to share with the family.</p>
+          </li>
+          <li class="next__card" style="--i:2">
+            <span class="next__num">03</span>
+            <h3 class="next__title">Test with families</h3>
+            <p class="next__text">Put the prototype in front of the three families I spoke to.</p>
+          </li>
+          <li class="next__card" style="--i:3">
+            <span class="next__num">04</span>
+            <h3 class="next__title">Measure trust</h3>
+            <p class="next__text">Fewer exits to YouTube and hotel sites; fewer over-budget surprises.</p>
+          </li>
+        </ol>
+
+        <footer class="closing">
+          <blockquote class="closing__quote"><p>“You have to be in control, because it's your trip.”</p></blockquote>
+          <p class="closing__line">This redesign keeps Myra doing the legwork — and gives that control back to the parent.</p>
+          <a class="btn closing__btn" href="prototype/">
+            Try the prototype
+            <svg class="icon-18" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+          </a>
+          <p class="closing__thanks">Thank you · Prerna · Razorpay × NID · Nov 2026</p>
+        </footer>
       </section>
     </main>
   </div>

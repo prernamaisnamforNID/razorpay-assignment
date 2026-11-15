@@ -60,8 +60,10 @@ a { color: inherit; }
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 
-.icon-12, .icon-14, .icon-15, .icon-16, .icon-18, .icon-24, .icon-28 { flex: none; display: block; }
+.icon-12, .icon-13, .icon-14, .icon-15, .icon-16, .icon-18, .icon-20, .icon-24, .icon-28 { flex: none; display: block; }
 .icon-12 { width: 12px; height: 12px; }
+.icon-13 { width: 13px; height: 13px; }
+.icon-20 { width: 20px; height: 20px; }
 .icon-14 { width: 14px; height: 14px; }
 .icon-15 { width: 15px; height: 15px; }
 .icon-16 { width: 16px; height: 16px; }
@@ -524,9 +526,58 @@ a { color: inherit; }
 .start__shots img { width: 220px; height: auto; border-radius: 8px; }
 .btn--sm { gap: 8px; padding: 11px 17px; font-size: 14px; line-height: 18px; }
 
-/* ── 6–12 · Coming soon ──────────────────────────────────── */
-.section--soon .eyebrow { margin: 0; }
-.soon { margin-top: 12px; font-size: 15px; line-height: 23px; color: var(--faint); }
+/* ── 7 · How AI works (Figma 86:1904) ────────────────────── */
+.section__head--tight { margin-bottom: 48px; }
+.fixes { margin: 0; padding: 0; list-style: none; }
+.fix { display: flex; align-items: center; gap: 32px; padding: 28px 0; border-top: 1px solid var(--line); }
+.fix__text { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+.fix__was {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 4px 10px 4px 8px; border-radius: 8px; background: #fdecec;
+  font: 500 13px/normal var(--font); color: #b42318;
+}
+.fix__title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 24px; font-weight: 500; line-height: 30px; letter-spacing: -.01em; color: var(--ink);
+}
+.fix__title .icon-20 { color: var(--green); }
+.fix__desc { font-size: 16px; line-height: 25px; color: var(--body); }
+.fix__visual { flex: none; width: 260px; height: auto; border-radius: 8px; }
+
+.roles { display: flex; gap: 16px; margin-top: 40px; }
+.role { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: 24px; border-radius: 10px; }
+.role--myra { background: #f2f7fe; }
+.role--parent { background: #f6f6f7; }
+.role__title { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 500; line-height: normal; color: var(--ink); }
+.role--myra .role__title .icon-18 { color: var(--blue); }
+.role--parent .role__title .icon-18 { color: var(--ink-3); }
+.role__list { display: flex; flex-direction: column; gap: 12px; }
+.role__list li { display: flex; gap: 10px; font-size: 15px; line-height: 22px; color: var(--ink-3); }
+.role__list li::before { content: "—"; flex: none; font: 400 13px/22px var(--mono); letter-spacing: .02em; color: var(--faint); }
+
+/* ── 8 · What's next (Figma 87:980) ──────────────────────── */
+.section__head--next { margin-bottom: 40px; }
+.next { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: stretch; }
+.next__card { display: flex; flex-direction: column; gap: 8px; padding: 20px; border-radius: 10px; background: #f7f8fa; }
+.next__num { font: 500 13px/normal var(--mono); letter-spacing: .02em; color: var(--blue); }
+.next__title { font-size: 17px; font-weight: 500; line-height: 23px; color: var(--ink); }
+.next__text { font-size: 14px; line-height: 21px; color: var(--muted); }
+
+.closing {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 20px;
+  margin-top: 96px; padding-top: 48px; border-top: 1px solid var(--line);
+}
+.closing__quote { margin: 0; font: italic 400 clamp(30px, 2vw + 12px, 40px)/1.15 "Instrument Serif", Georgia, serif; color: var(--ink); }
+.closing__line { font-size: 17px; line-height: 27px; color: var(--body); }
+.closing__btn { gap: 10px; }
+.closing__thanks { font: 400 11px/normal var(--mono); letter-spacing: .02em; text-transform: uppercase; color: var(--faint); }
+
+@media (max-width: 899.98px) {
+  .next { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 559.98px) {
+  .next { grid-template-columns: 1fr; }
+}
 
 /* ── Motion ──────────────────────────────────────────────── */
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
@@ -539,12 +590,17 @@ a { color: inherit; }
 .js .evidence:not(.is-in) .ev, .js .evidence:not(.is-in) .ev__note { opacity: 0; }
 .evidence.is-in .ev { animation: rise 500ms var(--ease) backwards; animation-delay: calc(var(--i, 0) * 60ms); }
 .evidence.is-in .has-img .ev__note { animation: draw 300ms var(--ease) 350ms backwards; }
+/* How AI works / What's next: cards fade + rise in, 60ms apart ([data-stagger] children, --i) */
+.js [data-stagger]:not(.is-in) > * { opacity: 0; }
+[data-stagger].is-in > * { animation: rise 500ms var(--ease) backwards; animation-delay: calc(var(--i, 0) * 60ms); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .js .reveal:not(.is-in), .js .board:not(.is-in) .note,
-  .js .evidence:not(.is-in) .ev, .js .evidence:not(.is-in) .ev__note { opacity: 1; }
-  .reveal.is-in, .board.is-in .note, .evidence.is-in .ev, .evidence.is-in .has-img .ev__note { animation: none; }
+  .js .evidence:not(.is-in) .ev, .js .evidence:not(.is-in) .ev__note,
+  .js [data-stagger]:not(.is-in) > * { opacity: 1; }
+  .reveal.is-in, .board.is-in .note, .evidence.is-in .ev, .evidence.is-in .has-img .ev__note,
+  [data-stagger].is-in > * { animation: none; }
   .toc__star, .toc__label, .toc__link, .note, .btn, .btn .icon-18, .tip, .cover__btn, .cover__play { transition: none; }
 }
 
@@ -591,6 +647,11 @@ a { color: inherit; }
 /* ── < 760px: single column ──────────────────────────────── */
 @media (max-width: 759.98px) {
   :root { --gutter: 16px; --section-pad: 56px; }
+  .fix { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .fix__title { font-size: 21px; line-height: 27px; align-items: flex-start; }
+  .fix__title .icon-20 { margin-top: 3px; }
+  .roles { flex-direction: column; }
+  .closing { margin-top: 64px; padding-top: 40px; }
   .topbar__crumb { font-size: 12px; padding: 18px 0; gap: 8px; }
   .meta { grid-template-columns: 1fr; gap: 16px; }
   .personas, .participants, .directions, .evidence { grid-template-columns: 1fr; }

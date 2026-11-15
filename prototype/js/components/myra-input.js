@@ -47,6 +47,25 @@ export function myraInput({ placeholder, onTap, variant = "home" }) {
     if (text.classList.contains("is-placeholder")) text.textContent = value;
   };
 
+  /* Chips above the field: "Ask about:" (H07a, Figma 96:166) or "Quick:" (H09, 100:90).
+     items: [{ id, label, icon? }]. */
+  el.setAskAbout = (label, items, onPick) => {
+    el.querySelector(".myra-input__ask")?.remove();
+    const row = html(`
+      <div class="myra-input__ask">
+        <span class="myra-input__ask-label">${esc(label)}</span>
+        ${items.map((i) => `
+          <button class="ask-chip tap" type="button" data-ask="${i.id}">
+            ${i.icon ? `<img class="icon" src="assets/icons/${i.icon}.svg" width="13" height="13" alt="" draggable="false">` : ""}${esc(i.label)}
+          </button>`).join("")}
+      </div>`);
+    row.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-ask]");
+      if (b) onPick(items.find((i) => i.id === b.dataset.ask));
+    });
+    el.prepend(row);
+  };
+
   el.clear = () => {
     text.textContent = placeholder;
     text.classList.add("is-placeholder");

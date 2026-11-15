@@ -7,7 +7,7 @@
      → H04 Pondicherry or H08a/H08b itinerary in this chat, or H07a (see h03-plan.js)
    Copy + timings: data/journey.js (h03, familyGroups, family, destination, timing). */
 import { html, esc, sprite, SHEET_MYRA } from "../dom.js";
-import { h03 as copy, myraHome, family as fam, familyGroups, promptsFor, paths, destination, beachesPage as beachesCopy } from "../../data/journey.js";
+import { h03 as copy, myraHome, family as fam, familyGroups, promptsFor, paths, destination, beachesPage as beachesCopy, hotels, travel } from "../../data/journey.js";
 import { getState, setState, subscribe } from "../state.js";
 import { planChecklist } from "../components/plan-checklist.js";
 import { planFlow } from "./h03-plan.js";
@@ -68,15 +68,24 @@ export default {
     }
     if (!replay) reached = { message, actions: [] };
     if (!replay || seed) {
-      setState({ needs: [], plan: { family: "todo", places: "todo", travel: "todo", stay: "todo", days: "todo" } });
+      setState({
+        needs: [],
+        plan: { family: "todo", places: "todo", travel: "todo", stay: "todo", days: "todo" },
+        booked: { hotel: false, cab: false },
+      });
     }
 
     const run = createRun({ instant: replay });
     el.run = run;
+    // Something another screen asked the chat to do next (e.g. the map → getting there).
+    const next = getState().chatNext;
+    if (next) setState({ chatNext: null });
+
     el.convo = conversation({
       log, input, ctx, run, message, seed,
       replayActions: replay ? [...reached.actions] : [],
       openBeaches: jump === "h05", // tracker jump to H05: open the page once the chat is rebuilt
+      next,
     });
 
     const checklist = planChecklist({ onStep: (id) => el.convo.planStep(id) });
@@ -113,17 +122,27 @@ function seedActions(target) {
     const opt = paths.options.find((o) => o.id === "itinerary");
     actions.push({ type: "path", id: opt.id, text: opt.title, source: "tapped" });
   }
-  if (["h04", "h05", "h06a"].includes(target)) {
+  if (["h04", "h05", "h06a", "h06e", "h07a", "h09"].includes(target)) {
     actions.push({ type: "path", id: "places", text: destination.userText, source: "tapped" });
   }
-  if (target === "h06a") {
+  if (["h06a", "h06e", "h07a", "h09"].includes(target)) {
     const decide = promptsFor(ID, "happy", "destination").find((x) => x.action === "decide");
     actions.push({ type: "decide", text: decide.text, source: "typed" });
+  }
+  if (target === "h06e" || target === "h09") {
+    actions.push({ type: "hotels", text: hotels.userText, source: "tapped" });
+  }
+  if (target === "h09") {
+    const final = promptsFor(ID, "happy", "hotels").find((x) => x.action === "finalPlan");
+    actions.push({ type: "finalPlan", text: final.text, source: "tapped" });
+  }
+  if (target === "h07a") {
+    actions.push({ type: "travel", text: travel.userText, source: "typed" });
   }
   return actions;
 }
 
-function conversation({ log, input, ctx, run, message, seed, replayActions, openBeaches }) {
+function conversation({ log, input, ctx, run, message, seed, replayActions, openBeaches, next }) {
   let instant = run.instant; // true while replaying; the chat goes live after
   const time = () => clock(copy.timestamp);
   const stamp = (source) => (source ? `${fam.sources[source]} · ${time()}` : time());
@@ -186,6 +205,8 @@ function conversation({ log, input, ctx, run, message, seed, replayActions, open
     for (const a of replayActions) await replayAction(a);
     instant = run.instant = false;
     if (openBeaches) plan.openBeaches();
+    if (next?.type === "travel") plan.startTravel(next.text, next.source);
+    if (next?.type === "hotels") plan.showHotels(next.text, next.source);
   }
 
   function confirmBlock(c, onYes, onChange, nextHint) {
@@ -313,6 +334,12 @@ function conversation({ log, input, ctx, run, message, seed, replayActions, open
     if (a.type === "path") return plan.choosePath(a.id, a.text, a.source);
     if (a.type === "choice") return plan.choose(a.id, a.text, a.source);
     if (a.type === "decide") return plan.decideBeaches(a.text, a.source);
+    if (a.type === "hotels") return plan.showHotels(a.text, a.source);
+    if (a.type === "keepHotel") return plan.hotelChoice("keep", a.text, a.source);
+    if (a.type === "finalPlan") return plan.showFinalPlan(a.text, a.source);
+    if (a.type === "book") return plan.confirmBooking(a.id);
+    if (a.type === "travel") return plan.startTravel(a.text, a.source);
+    if (a.type === "fly") return plan.fly(a.text, a.source);
   }
 
   /* ---------- Edit sheets ---------- */
@@ -402,6 +429,7 @@ function conversation({ log, input, ctx, run, message, seed, replayActions, open
     if (!p) return ctx.toast(`You said: “${text}”`);
 
     busy = true;
+    if (p.action === "finalPlan") plan.announceFinalPlan(); // canvas note, right away
     await input.typeInto(text, ms("typePerChar"));
     input.clear();
     busy = false;
@@ -430,6 +458,12 @@ function conversation({ log, input, ctx, run, message, seed, replayActions, open
       case "choice": return plan.choose(p.choice, text, "typed");
       case "explore": return plan.explore(p.explore);
       case "decide": return plan.decideBeaches(text, "typed");
+      case "hotels": return plan.showHotels(text, "typed");
+      case "cheaper": return plan.hotelChoice("cheaper", text, "typed");
+      case "keepHotel": return plan.hotelChoice("keep", text, "typed");
+      case "finalPlan": return plan.showFinalPlan(text, "tapped");
+      case "travel": return plan.startTravel(text, "typed");
+      case "fly": return plan.fly(text, "typed");
       default: return ctx.toast(`You said: “${text}”`);
     }
   }
@@ -445,6 +479,7 @@ function conversation({ log, input, ctx, run, message, seed, replayActions, open
     unsubscribe();
     sheet?.close();
     plan.closeBeaches();
+    plan.closeBooking();
     tripCard?.destroy();
   }
 

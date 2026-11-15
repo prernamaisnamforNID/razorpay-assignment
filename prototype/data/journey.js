@@ -84,6 +84,22 @@ export const steps = [
       destination: [
         { text: "We've decided on Rock Beach, Auroville and Serenity.", action: "decide" },
       ],
+      // H06a → H07a
+      fit: [
+        { text: "Show hotels around these beaches", action: "hotels" },
+      ],
+      // H06e — a stay is over the stay budget
+      // After H06e, the demo skips ahead to the final plan (H09) — see substepNotes.
+      hotels: [
+        { text: "Let's go with Seaside Stay and a cab. Show me the final plan.", action: "finalPlan" },
+      ],
+      hotelKept: [
+        { text: "Let's go with Seaside Stay and a cab. Show me the final plan.", action: "finalPlan" },
+      ],
+      // H07a — the over-budget edge case
+      travel: [
+        { text: "Let's fly", action: "fly" },
+      ],
       // While the H05 Pondicherry page is open.
       beaches: [
         { text: "Which beach is calmest for a 3-year-old?", action: "toast" },
@@ -93,6 +109,8 @@ export const steps = [
     // Evaluator notes shown above the prompts (side panel + phone drawer) at a stage.
     substepNotes: {
       destination: "Assumption: the family has already explored the beaches and picked three. In the full flow they'd save them from the Beaches sheet (H05) and discuss with family first.",
+      hotels: "Assumption for this demo: the family has chosen Seaside Stay, picked travel by cab and agreed on the activities. In the full flow they'd decide these with Myra step by step.",
+      hotelKept: "Assumption for this demo: the family has chosen Seaside Stay, picked travel by cab and agreed on the activities. In the full flow they'd decide these with Myra step by step.",
     },
     input: true,
   },
@@ -124,21 +142,18 @@ export const steps = [
   // H06b is its own screen; `chatStage` = the chat stage underneath it, so Back lands there after a jump.
   {
     id: "h06b", num: "6b", screen: "H06b", name: "Map", chatStage: "h06a",
-    prompts: [],
-    hint: "Nothing to say here. Try the hotel buttons, or go back to the chat.",
+    // Goes back to the chat and on to H07a (getting there).
+    prompts: [{ text: "How should we get there?", action: "travel" }],
     input: false,
   },
+  // H06e continues the same chat: hotels around the saved beaches, against the stay budget.
   {
-    id: "h07a", num: "7", screen: "H07a", name: "Travel modes",
-    title: "Chat · getting there",
-    lead: "Here's how you could get there from Bengaluru, for all 5 of you.",
-    shows: ["Session 2 starts", "Travel modes compared: Drive (best fit), Fly (96% of budget), Bus (left out)", "Ask-about chips"],
-    actions: ["Tap ask-about chips"],
-    prompts: [
-      "What about the train?",
-      "Why is driving the best fit?",
-    ],
-    input: true,
+    id: "h06e", num: "6c", screen: "H06e", name: "Hotels", host: "h03", substeps: ["hotels", "hotelKept"],
+  },
+  // H07a continues the same chat: how to get there, against the ₹45K budget.
+  {
+    id: "h07a", num: "7", screen: "H07a", name: "Travel modes", host: "h03", substeps: ["travel", "overBudget"],
+    hint: "Pick an option in the app. The prototype ends here; the rest is in the case study.",
   },
   {
     id: "h07b", num: "7b", screen: "H07b", name: "Train",
@@ -159,6 +174,11 @@ export const steps = [
       "Can we leave after her nap?",
     ],
     input: true,
+  },
+  // H09 — the last step, in the same chat: the final plan, then book the hotel and the cab.
+  {
+    id: "h09", num: "8", screen: "H09", name: "Final plan", host: "h03", substeps: ["final", "booked"],
+    hint: "Book the hotel and the cab in the app. Tap a time in a day card to hide or show its reason.",
   },
 ];
 
@@ -214,6 +234,11 @@ export const timing = {
   cardStagger: 60,           // summary cards slide in, this far apart
   typingDots: 900,           // typing dots before a Myra reply
   familyWorking: 1200,       // "Putting everyone together…" loader
+  hotelsWorking: 1000,       // "Finding stays near your beaches…" loader (H06e)
+  finalStep: 500,            // each step of the H09 loader (3 steps ≈ 1.5s)
+  planStagger: 80,           // H09: checklist steps turn done this far apart
+  dayStagger: 120,           // H09: day cards fade + rise in this far apart
+  envToast: 3000,            // canvas toast (outside the phone) stays this long
   beforeNextScreen: 900,     // family confirmed → H04
   shimmerLoop: 1400,         // shimmer sweep (CSS reads --shimmer-loop)
 };
@@ -423,8 +448,8 @@ export const family = {
 export const planSteps = [
   { id: "family", label: "Family", todoIcon: "plan-check" },
   { id: "places", label: "Places", todoIcon: "plan-map-pin", activeIcon: "plan-map-pin-active" },
-  { id: "travel", label: "Getting there", todoIcon: "plan-route" },
-  { id: "stay", label: "Stay", todoIcon: "plan-bed" },
+  { id: "travel", label: "Getting there", todoIcon: "plan-route", activeIcon: "plan-route-active" },
+  { id: "stay", label: "Stay", todoIcon: "plan-bed", activeIcon: "plan-bed-active" },
   { id: "days", label: "Days", todoIcon: "plan-calendar", draftIcon: "plan-calendar-draft", draftLabel: "Days · draft" },
 ];
 export const planCopy = {
@@ -575,6 +600,7 @@ export const beachFit = {
   chips: [
     { id: "share", label: "Share on WhatsApp", icon: "message-circle-16-white", primary: true },
     { id: "explore", label: "Keep exploring", icon: "waves-16" },
+    { id: "hotels", label: "Show hotels around these beaches" }, // → H06e
   ],
   chipToast: "Coming next",
 };
@@ -614,6 +640,188 @@ export const beachMap = {
   },
   hotelsToast: "Next: stays near your beaches",
   toast: "Coming next", // filters, layers
+};
+
+/* H06e — hotels around your beaches: distance + budget (Figma 98:2). Same chat.
+   `near` = minutes to each saved beach, numbered like the H06a map pins
+   (Figma's frame numbers Serenity 2 / Auroville 3; the map has them the other way round). */
+export const hotels = {
+  userText: "Show hotels around these beaches",
+  working: {
+    title: "Working on your request…",
+    done: "Done!",
+    steps: [{ title: "Finding stays near your beaches…", desc: "Checking distance, lifts and pure-veg food for all 5 of you." }],
+  },
+  intro: "Here are 2 stays near White Town, with how far each is from your beaches. One is over your ₹16K stay budget, so I'm flagging it before you choose.",
+  nearLabel: "Distance to your beaches",
+  nights: "for 2 nights",
+  stays: [
+    {
+      id: "seaside", name: "Seaside Stay", price: "₹13,800",
+      near: [{ n: 1, text: "Rock Beach · 5 min walk" }, { n: 2, text: "Auroville · 25 min" }, { n: 3, text: "Serenity · 15 min" }],
+      fits: ["Within budget", "Lift", "Pure-veg nearby"],
+    },
+    {
+      id: "grand", name: "Promenade Grand", price: "₹18,400", over: "₹2,400 over your ₹16K stay budget",
+      near: [{ n: 1, text: "Rock Beach · 2 min walk" }, { n: 2, text: "Auroville · 28 min" }, { n: 3, text: "Serenity · 18 min" }],
+      fits: ["Kids' pool", "Lift"],
+    },
+  ],
+  ask: "Want a cheaper one with a kids' pool, or keep the Promenade Grand?",
+  chips: [{ id: "cheaper", label: "Find a cheaper one", primary: true }, { id: "keep", label: "Keep it anyway" }],
+  cheaperToast: "Showing stays under ₹16K",
+  kept: "Okay — nothing is booked until you confirm.",
+};
+
+/* H09 — the final plan, then book the hotel and the cab (Figma 100:2). Same chat.
+   COPY RULE: the travel mode is "cab", never "drive".
+   Each day row: time, what happens, and why (the reason line; tap a row to hide/show it). */
+export const finalPlan = {
+  skipToast: "Skipping ahead: hotel, travel and activities assumed decided.",
+  working: {
+    title: "Working on your request…",
+    done: "Done!",
+    steps: [
+      { title: "Fitting days around her nap", desc: "Mornings and evenings out, midday rest." },
+      { title: "Checking Papa's pace", desc: "Short walks, flat paths, no stairs." },
+      { title: "Adding up the costs", desc: "Stay and cab against your ₹45K." },
+    ],
+  },
+  intro: "Here's your weekend, planned around her nap, Papa's pace and your ₹45K. Everything is checked against your family.",
+  days: [
+    {
+      title: "Fri 28 Nov", tag: "Arrive",
+      rows: [
+        { time: "5:00 AM", text: "Leave Bengaluru by cab", why: "She sleeps through the first stretch" },
+        { time: "~11:30 AM", text: "Check in · Seaside Stay", why: "Early check-in requested" },
+        { time: "1–3 PM", text: "Rest · her nap" },
+        { time: "5:00 PM", text: "Rock Beach · 5 min walk", why: "Flat promenade for Papa" },
+      ],
+    },
+    {
+      title: "Sat 29 Nov", tag: "Beaches",
+      rows: [
+        { time: "7:30 AM", text: "Serenity Beach · 15 min", why: "Quiet in the mornings" },
+        { time: "1–3 PM", text: "Lunch, rest · her nap", why: "Pure-veg café nearby" },
+        { time: "5:00 PM", text: "Auroville Beach · 25 min", why: "Soft sand for her to play" },
+        { time: "8:00 PM", text: "Quiet evening for you two", why: "Grandparents stay in with her" },
+      ],
+    },
+    {
+      title: "Sun 30 Nov", tag: "Head home",
+      rows: [
+        { time: "9:00 AM", text: "French Quarter, short stroll", why: "Benches along the way" },
+        { time: "4:00 PM", text: "Head home by cab", why: "She naps after the first hour" },
+      ],
+    },
+  ],
+  book: {
+    title: "Ready to book",
+    total: "₹27,800 of ₹45K",
+    spent: 27.8, budget: 45, // bar width = spent / budget
+    items: [
+      {
+        id: "hotel", emoji: "🏨", name: "Seaside Stay · 2 nights", price: "₹13,800",
+        note: "Free cancellation till 25 Nov · lift · ground floor requested",
+        button: "Book hotel", booked: "✓ Booked", toast: "Hotel booked",
+        sheet: {
+          title: "Book Seaside Stay",
+          dates: "Fri 28 – Sun 30 Nov · 2 nights · 5 guests",
+          includes: ["Ground-floor family room, lift in the building", "Early check-in requested for her nap", "Breakfast included · pure-veg options", "Free cancellation till 25 Nov"],
+        },
+      },
+      {
+        id: "cab", emoji: "🚗", name: "SUV cab · return", price: "₹14,000 est.",
+        note: "5 AM pickup Fri · 4 PM Sun · child seat",
+        button: "Book cab", booked: "✓ Booked", toast: "Cab booked",
+        sheet: {
+          title: "Book SUV cab",
+          dates: "Fri 28 Nov, 5:00 AM pickup · Sun 30 Nov, 4:00 PM return",
+          includes: ["7-seater SUV, room for luggage and Papa's legs", "Child seat fitted", "Stops whenever she needs a break", "Tolls and parking included"],
+        },
+      },
+    ],
+    payThere: "Pay there: beaches, meals and the French Quarter walk — nothing to book.",
+  },
+  sheetConfirm: "Confirm booking",
+  sheetLater: "Not yet",
+  sheetPriceLabel: "Total",
+  nothingBooked: "Nothing is booked until you tap. You can still change any part of the plan.",
+  quickLabel: "Quick:",
+  quick: [
+    { id: "share", label: "Share plan" },
+    { id: "edit", label: "Edit a day" },
+    { id: "swap", label: "Swap hotel" },
+  ],
+  quickToast: "Coming next",
+  allBooked: "All set! Your weekend in Pondicherry is booked. I'll remind you the night before to pack for her nap in the cab.",
+  endToast: "End of prototype — thanks for trying it!",
+};
+
+/* H07a v2 — getting there, against the budget (Figma 96:2). Same chat.
+   COPY RULE: Myra never says "drive" before the parent picks a mode — except as the option name.
+   Budget bars: travel segment width = cost / budget. */
+export const travel = {
+  userText: "How should we get there?",
+  intro: "Lovely. Before stays and days, let's settle how you'll get there. I compared the options from Bengaluru for all 5 of you.",
+  checked: {
+    title: "Checked against",
+    pills: [
+      { letter: "D", bg: "#FFF0DC", label: "Sleeps on long journeys" },
+      { letter: "D", bg: "#FFF0DC", label: "Motion sick" },
+      { letter: "P", bg: "#FFE6EA", label: "No stairs, short walks" },
+      { letter: "₹", bg: "#DFF0FF", label: "₹45K total" },
+    ],
+  },
+  budget: 45, // ₹K
+  modes: [
+    {
+      id: "drive", best: "Best fit for your family", icon: "car-20-blue",
+      title: "Drive", sub: "Cab or your own car · door to door",
+      metrics: [{ label: "Door to door", value: "~6 hrs" }, { label: "Return, for 5", value: "~₹14K est." }],
+      cost: 14, travelLabel: "Travel ₹14K", leftLabel: "₹31K left for stay & days", tone: "ok",
+      fits: [
+        { ok: true, text: "Leave at 5 AM so she sleeps through it" },
+        { ok: true, text: "Stop whenever she needs a break" },
+        { ok: true, text: "No stairs, picked up at your door" },
+        { ok: false, text: "A long sit for Papa, so I'll plan a break" },
+      ],
+      actions: [{ id: "chooseDrive", label: "Choose drive", primary: true }, { id: "journey", label: "See journey" }],
+    },
+    {
+      id: "fly", icon: "plane-20-blue",
+      title: "Fly to Pondicherry", sub: "Bengaluru → Pondicherry Airport · 1h 25m flight",
+      metrics: [{ label: "Door to door", value: "~4 hrs" }, { label: "Return, for 5", value: "₹43K+" }],
+      cost: 43, travelLabel: "Travel ₹43K", leftLabel: "Only ₹2K left for stay & days", tone: "over",
+      fits: [
+        { ok: true, text: "Shortest time on the road" },
+        { bad: true, text: "Uses almost all of your ₹45K" },
+        { ok: false, text: "Airport walking, so ask for wheelchair help for Papa" },
+      ],
+      actions: [{ id: "compare", label: "Compare with drive" }],
+    },
+  ],
+  leftOut: {
+    title: "Left out: Bus",
+    reason: "About 7 hrs on winding roads, likely to upset her motion sickness, and steep steps to board for Papa.",
+    action: "Show anyway",
+  },
+  tip: "You can ask about any way of getting there, anytime. Tap a mode below or just ask.",
+  // "Ask about" chips above the input. `fly: true` = the over-budget edge case.
+  askLabel: "Ask about:",
+  ask: [
+    { id: "car", label: "Car", icon: "car-13-indigo" },
+    { id: "flight", label: "Flight", icon: "plane-13-indigo", fly: true },
+    { id: "train", label: "Train", icon: "train-13-indigo" },
+    { id: "bus", label: "Bus", icon: "bus-13-indigo" },
+  ],
+  inputPlaceholder: "Ask about getting there…",
+  // Over budget: the parent picks Fly.
+  flyText: "Let's fly",
+  overBudget: "Flying leaves only ₹2K for the stay and days — not enough for 2 nights. Drive instead, or raise the budget?",
+  overChips: [{ id: "goDrive", label: "Go with drive", primary: true }, { id: "raise", label: "Raise budget" }],
+  endToast: "End of prototype — the rest is in the case study",
+  toast: "Coming next", // See journey, Compare, Show anyway, other Ask-about chips
 };
 
 /* H08a — what Myra knows vs what's missing. `plan` items move to "known" once that plan step is done. */
@@ -703,11 +911,9 @@ export const scenarios = [
   },
   {
     id: "overBudget", name: "Over budget",
-    desc: "You pick Fly. Myra flags 96% of ₹45K and offers options.",
-    start: "h07a",
-    preset: { savedBeaches: ["promenade", "serenity", "auroville"], travelMode: null },
-    notes: { h07a: "Parent picks Fly → Myra flags 96% of ₹45K and offers drive or cheaper dates." },
-    prompts: { h07a: ["Let's just fly.", "Are there cheaper dates?"] },
+    desc: "A stay is ₹2,400 over the ₹16K stay budget. Myra flags it before you choose.",
+    start: "h06e", // the chat is rebuilt with the family and the 3 saved beaches, then H06e
+    preset: { savedBeaches: ["promenade", "auroville", "serenity"], travelMode: null },
   },
   {
     id: "tooMany", name: "Too many beaches",

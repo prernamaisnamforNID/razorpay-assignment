@@ -1,0 +1,87 @@
+/* H07a v2 · Getting there, against the budget (Figma 96:2, in the H03 chat).
+   The "Checked against" strip reuses .around (chat.css); fit tags reuse .beach__fit
+   and the left-out row reuses .bp__left-out (beaches.css). */
+
+/* Mode cards (96:62 / 96:112) */
+.mode {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.mode.is-best { border: 1.5px solid var(--myra-chip-border); box-shadow: var(--shadow); }
+.mode__best {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 3px 10px 3px 8px;
+  border-radius: 10px;
+  background: var(--myra-grad);
+  font: 500 11px/normal var(--font-myra);
+  color: #fff;
+}
+.mode__head { display: flex; align-items: center; gap: 10px; align-self: stretch; }
+.mode__tile {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--blue-light);
+}
+.mode__names { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.mode__title { margin: 0; font: 600 16px/normal var(--font-myra); color: var(--text); }
+.mode__sub { font: 400 12px/normal var(--font-myra); color: var(--text-2); }
+
+.mode__metrics { display: flex; gap: 6px; align-self: stretch; margin: 0; }
+.mode__metrics div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; padding: 8px 10px; border-radius: 10px; background: #F7F9FC; }
+.mode__metrics dt { font: 400 10px/normal var(--font-myra); color: var(--text-2); }
+.mode__metrics dd { margin: 0; font: 600 13px/normal var(--font-myra); color: #000; white-space: nowrap; }
+
+/* Budget bar (97:2 / 97:9): travel segment = cost / budget, then what's left */
+.budget { display: flex; flex-direction: column; gap: 6px; align-self: stretch; }
+.budget__bar { display: flex; gap: 2px; height: 10px; overflow: hidden; border-radius: 5px; }
+.budget__travel { flex: none; height: 100%; }
+.budget__left { flex: 1; min-width: 0; height: 100%; }
+.budget__caption { display: flex; justify-content: space-between; gap: 8px; margin: 0; font: 400 11px/normal var(--font-myra); white-space: nowrap; }
+.budget__caption span:first-child { font-weight: 500; }
+.budget--ok .budget__travel { background: var(--myra-grad); }
+.budget--ok .budget__left { background: #DDE9F7; }
+.budget--ok .budget__caption span:first-child { color: var(--myra-indigo); }
+.budget--ok .budget__caption span:last-child { color: var(--good); }
+.budget--over .budget__travel { background: #E5383B; }
+.budget--over .budget__left { background: #F3D6D6; }
+.budget--over .budget__caption { color: var(--bad); }
+
+.mode__fits { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.beach__fit.is-bad { background: var(--bad-bg); color: var(--bad); }
+.mode__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.mode__chip { padding: 6px 12px; font-size: 13px; }
+
+/* Left out: Bus — full chat width */
+.left-out { margin: 0; }
+
+/* "Ask about:" chips above the chat input (96:166) */
+.myra-input--chat:has(.myra-input__ask) { gap: 10px; padding-top: 14px; }
+.myra-input__ask { display: flex; align-items: center; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.myra-input__ask::-webkit-scrollbar { display: none; }
+.myra-input__ask-label { flex: none; font: 400 12px/normal var(--font-myra); color: var(--text-2); }
+.app .ask-chip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px 4px 8px;
+  border-radius: 14px;
+  background: var(--myra-bubble);
+  font: 400 12px/normal var(--font-myra);
+  color: var(--text-body);
+  white-space: nowrap;
+}
