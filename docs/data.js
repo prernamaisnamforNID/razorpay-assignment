@@ -1,6 +1,81 @@
 /* Case study content that's rendered from data — edit copy here.
    Sticky-note colours live in docs/case-study.css (--s1 … --s6, --s0 for "other"). */
 
+/* The problem: what testing Myra showed (Figma 78:753). A missing `src` file shows a
+   "Myra test screenshot" placeholder, and swaps to the image once the file exists.
+   `crop` (optional) frames the screenshot like Figma: width/left in % of the card,
+   shift = how far up to move it, in % of the image's own height.
+   `note` (optional) is a red annotation box over the image, in % of the image. */
+export const evidence = [
+  {
+    title: "It decides without asking",
+    text: "Called a ₹21,598 hotel “best for your kid”, then showed it was ₹5,598 over budget only when locking it — and “Proceed anyway” went through in one tap.",
+    src: "assets/myra/over-budget.png",
+    width: 712, height: 1600,
+    alt: "Myra test chat: after I asked it to lock The Residency Towers, Myra replies that the hotel costs ₹21,598, ₹5,598 over the remaining stay budget of ₹16,000.",
+    crop: { width: 106.09, left: -2.88, shift: 17.8 },
+    note: { left: 3.63, top: 28.15, width: 92.75, height: 8.6, label: "Revealed only at locking" },
+  },
+  {
+    title: "It forgets what it was told",
+    text: "Asked for hotels near the beach, it dropped the shortlist and the budget — prices jumped from ₹4–5K to ₹14,202+ a night, without a word.",
+    src: "assets/myra/near-the-beach.png",
+    alt: "Myra test: hotel results for 'near the beach', priced ₹14,202 and up a night, ignoring the earlier shortlist and budget.",
+  },
+  {
+    title: "It doesn't show its working",
+    text: "Said hotels were “within your budget” when they weren't. “Yes, they can make khichdi”, “5-star” — no sources. No total trip cost.",
+    src: "assets/myra/no-sources.png",
+    alt: "Myra test: hotel cards labelled 'within your budget' and claims like 'they can make khichdi', with no sources and no total trip cost.",
+  },
+];
+
+/* Solution: three moments (Figma 86:191). Each screen PNG is Figma's export of the
+   card — gradient, phone and shadow — so it's shown as is. */
+export const moments = [
+  {
+    title: "Confirm before planning",
+    desc: "Myra plays back the trip, then each person's needs — and waits for “Looks right” before planning anything.",
+    points: [
+      "Trip summary the parent can swipe and edit",
+      "Questions one person at a time, in their own words",
+      "A family summary to confirm — or change",
+    ],
+    screens: [
+      { src: "assets/screens/h03-trip-summary.png", w: 960, h: 840, alt: "Myra plays back the trip: Pondicherry, 3 days, 5 people, with swipeable When and Where cards to check or change." },
+      { src: "assets/screens/h03d-family-summary.png", w: 960, h: 840, alt: "What Myra understood about the parents, then 'Planning around your family': 5 people, 9 things to keep in mind, each editable." },
+    ],
+  },
+  {
+    title: "Explore with evidence",
+    desc: "Places come already checked against the family, with what was left out and why — and a map that shows what fits the trip.",
+    points: [
+      "Fit tags with reasons on every beach",
+      "“Left out: Paradise Beach — reached only by boat”",
+      "A fit meter: 3 of 4 beach windows used",
+    ],
+    screens: [
+      { src: "assets/screens/h04-pondicherry.png", w: 630, h: 840, alt: "Myra notes both grandparents are pure veg and Papa has knee trouble, then shows Pondicherry with the family's needs in mind." },
+      { src: "assets/screens/h05-beaches.png", w: 630, h: 840, alt: "Pondicherry page, Beaches tab: 'Beaches that fit your family', checked against her motion sickness, Papa's knees and pure-veg food." },
+      { src: "assets/screens/h06a-fit-meter.png", w: 630, h: 840, alt: "Three saved beaches with a fit meter — 3 of 4 beach windows used — and a map of the saved beaches." },
+    ],
+  },
+  {
+    title: "Getting there, against the budget",
+    desc: "Every way to travel compared on time, cost and the family. Over budget is flagged up front, not at checkout.",
+    points: [
+      "Drive, fly, train — side by side",
+      "Flight flagged at 96% of the ₹45K budget",
+      "Travel timed around her sleep, then locked in",
+    ],
+    screens: [
+      { src: "assets/screens/h07a-modes.png", w: 630, h: 840, alt: "Back after 2 days with 3 beaches decided, Myra compares ways to get from Bengaluru, checked against the family and the ₹45K budget." },
+      { src: "assets/screens/h07b-train.png", w: 630, h: 840, alt: "The train compared for the family: about 9 hours door to door, about ₹6K for 5, 13% of budget, with pros and watch-outs." },
+      { src: "assets/screens/h07c-drive.png", w: 630, h: 840, alt: "The drive, timed so she sleeps through the first stretch and Papa gets a break, with a 7-seater cab." },
+    ],
+  },
+];
+
 /* Research participants (sticky-board columns). */
 export const people = {
   P1: { name: "Mother of two", tint: "#FFE6EA" },
