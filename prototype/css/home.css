@@ -1,0 +1,158 @@
+/* H01 · MMT Home — Figma node 40:2. Values are from Figma. */
+
+.home { font-family: var(--font-app); }
+
+/* Top bar (40:5) */
+.home-top {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 16px 10px;
+}
+.home-top__group { display: flex; align-items: center; }
+.home-top__group--left { gap: 14px; }
+.home-top__group--right { gap: 16px; }
+.home-top__btn { display: block; }
+
+/* Scroll area (40:20) — padding-bottom clears the overlaid nav */
+.home-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 16px calc(98px + 12px + env(safe-area-inset-bottom, 0px));
+}
+
+/* Myra search bar (40:21). Figma exports #99D1FF; the render shows a blue → lavender stroke. */
+.home-search {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px;
+  border: 1.5px solid transparent;
+  border-radius: 16px;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(90deg, #99D1FF, #C3B4F4) border-box;
+}
+.home-search__text { flex: 1; min-width: 0; font: 400 16px/22px var(--font-app); color: var(--text-3); }
+
+/* Main services (40:25) */
+.home-main { flex: none; display: flex; gap: 8px; }
+.home-main__tile {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 4px;
+  border-radius: 16px;
+  background: var(--surface);
+}
+.home-main__label { font: 900 13px/16px var(--font-app); color: var(--text); text-align: center; }
+
+/* More services (40:38) */
+.home-more {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 8px;
+  border-radius: 16px;
+  background: var(--surface);
+}
+.home-more__row { display: flex; align-items: flex-start; }
+.home-more__item {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.home-more__label { font: 400 12px/15px var(--font-app); color: var(--text-body); text-align: center; }
+
+/* Offers header (40:78) */
+.home-offers-head { flex: none; display: flex; align-items: center; justify-content: space-between; padding-top: 6px; }
+.home-offers-head__title { margin: 0; font: 900 20px/normal var(--font-app); }
+.home-offers-head__all { display: flex; align-items: center; gap: 4px; font: 700 15px/normal var(--font-app); color: var(--blue); }
+
+/* Offer tabs (40:84) — scrolls sideways; transparent border keeps tabs from shifting on select */
+.home-tabs {
+  flex: none;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.home-tabs::-webkit-scrollbar { display: none; }
+.home-tabs__tab {
+  flex: none;
+  padding: 5px 11px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: 400 14px/normal var(--font-app);
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.home-tabs__tab.is-active {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  color: var(--blue);
+  font-weight: 700;
+}
+
+/* Offer banners (40:95) */
+.home-banners {
+  flex: none;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.home-banners::-webkit-scrollbar { display: none; }
+.home-banners__item { flex: none; scroll-snap-align: start; border-radius: 14px; overflow: hidden; }
+
+/* Bottom nav (40:98) — fixed over the scroll area */
+.home-nav {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px max(24px, env(safe-area-inset-bottom, 0px));
+  border-radius: 22px 22px 0 0;
+  background: var(--surface);
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+}
+.home-nav__item {
+  position: relative;
+  flex: none;
+  width: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font: 400 12px/normal var(--font-app);
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.home-nav__item.is-active { font-weight: 700; color: var(--blue); }
+.home-nav__badge {
+  position: absolute;
+  left: 32px; top: -6px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: var(--red);
+  color: #fff;
+  font: 700 10px/normal var(--font-app);
+  font-style: normal;
+}
+.home-nav__myra { flex: none; width: 64px; height: 64px; padding: 4px; border-radius: 50%; }
+.home-nav__myra-img { border-radius: 28px; }

@@ -1,0 +1,106 @@
+/* Placeholder screens (H02 → H07c) until each one is built from Figma. */
+
+.ph { font-family: var(--font-myra); background: #F7F9FC; }
+
+.ph-top {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--myra-bubble-border);
+  background: var(--surface);
+}
+.ph-top__back { display: grid; place-items: center; width: 36px; height: 36px; color: var(--myra-navy); }
+.ph-top__title { font-weight: 600; font-size: 16px; color: var(--myra-navy); }
+
+.ph-body { padding: 20px 16px 24px; }
+
+.ph-card {
+  padding: 20px;
+  border: 1.5px dashed var(--myra-chip-border);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  color: var(--myra-navy);
+}
+.ph-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--myra-bubble);
+  color: var(--myra-indigo);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.ph-title { margin: 12px 0 2px; font-size: 20px; font-weight: 600; line-height: 1.3; }
+.ph-step { margin: 0; font-size: 13px; color: var(--text-2); }
+.ph-note {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  background: var(--warn-bg);
+  color: var(--warn);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.ph-h {
+  margin: 18px 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.ph-list { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.6; }
+
+.ph-foot {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 16px max(24px, env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--myra-bubble-border);
+  background: var(--surface);
+}
+.ph-input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--myra-chip-border);
+  border-radius: var(--r-pill);
+  color: var(--text-3);
+  font-size: 14px;
+}
+.ph-input svg { color: var(--myra-indigo); }
+.ph-next {
+  height: 48px;
+  border-radius: var(--r-pill);
+  background: var(--myra-grad);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  text-align: center;
+}
+
+/* Toasts clear the taller placeholder footer. */
+.app:not([data-screen="h01"]) .app__toasts { bottom: 156px; }
+
+/* The parent's first message (H03 receives it from H02). */
+.ph-bubble {
+  max-width: 85%;
+  margin: 0 0 16px auto;
+  padding: 12px 14px;
+  border-radius: 18px 18px 4px 18px;
+  background: var(--myra-grad);
+  color: #fff;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* Myra's opening line on a placeholder (e.g. H07a reached from "Check how to get there"). */
+.ph-lead { margin: 0 0 16px; font-size: 15px; line-height: 22px; color: var(--text); }

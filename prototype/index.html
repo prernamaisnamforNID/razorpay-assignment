@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F2F2F2">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Ccircle cx=%228%22 cy=%228%22 r=%227%22 fill=%22%234665AC%22/%3E%3C/svg%3E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Myra prototype">
+  <title>Myra Family Trip Prototype</title>
+  <meta name="description" content="Coded prototype: planning a family weekend with Myra, MakeMyTrip's AI assistant. Razorpay × NID design assignment.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Poppins:wght@400;500;600;700&display=swap">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/shell.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/h02.css">
+  <link rel="stylesheet" href="css/chat.css">
+  <link rel="stylesheet" href="css/sheet.css">
+  <link rel="stylesheet" href="css/placeholder.css">
+  <link rel="stylesheet" href="css/coach.css">
+  <script>/* set before first paint so embed mode never flashes the panels */
+    if (new URLSearchParams(location.search).get("embed") === "1") document.documentElement.classList.add("is-embed");</script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body class="env">
+
+  <header class="topbar">
+    <a class="topbar__back" href="../">← Back to case study</a>
+    <h1 class="topbar__title">Myra · Family trip prototype</h1>
+    <button class="btn-quiet topbar__restart" type="button" data-restart>↺ Restart</button>
+  </header>
+
+  <main class="stage">
+    <aside class="panel panel--left" aria-label="Scenarios and journey">
+      <section class="panel__section">
+        <h2 class="panel__label">Scenario</h2>
+        <ul class="opts" data-slot="scenarios"></ul>
+      </section>
+      <section class="panel__section">
+        <h2 class="panel__label">Journey</h2>
+        <ol class="journey" data-slot="journey"></ol>
+      </section>
+    </aside>
+
+    <section class="stage__centre" aria-label="App">
+      <div class="device-fit">
+        <div class="device">
+          <div class="app" data-theme="light">
+            <div class="app__status" aria-hidden="true"><span>9:41</span><span class="app__status-icons"><i></i><i></i><i></i></span></div>
+            <div class="app__stack"></div>
+            <div class="app__toasts" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel panel--right" aria-label="Try saying">
+      <section class="panel__section">
+        <h2 class="panel__label">Try saying</h2>
+        <p class="panel__note">Tap a prompt to send it to Myra, as if you typed or spoke it.</p>
+        <div class="prompts" data-slot="prompts"></div>
+      </section>
+    </aside>
+  </main>
+
+  <!-- Phone layout only -->
+  <button class="fab" type="button" aria-expanded="false" aria-controls="drawer">
+    Try saying… <span class="fab__count" data-prompt-count hidden></span>
+  </button>
+
+  <div class="drawer" id="drawer" hidden>
+    <div class="drawer__scrim"></div>
+    <div class="drawer__sheet" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+      <div class="drawer__head">
+        <h2 class="panel__label" id="drawer-title">Try saying</h2>
+        <button class="drawer__close" type="button" aria-label="Close">✕</button>
+      </div>
+      <div class="drawer__body">
+        <div class="prompts" data-slot="prompts"></div>
+        <details class="drawer__more">
+          <summary>Scenarios &amp; journey</summary>
+          <h3 class="panel__label">Scenario</h3>
+          <ul class="opts" data-slot="scenarios"></ul>
+          <h3 class="panel__label">Journey</h3>
+          <ol class="journey" data-slot="journey"></ol>
+        </details>
+        <div class="drawer__foot">
+          <button class="btn-quiet" type="button" data-restart>↺ Restart</button>
+          <a class="drawer__link" href="../">← Back to case study</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

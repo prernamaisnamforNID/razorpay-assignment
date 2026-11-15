@@ -1,0 +1,43 @@
+/* Design tokens — PROJECT_STRUCTURE.md §8 (app) + the quiet environment around it. */
+:root {
+  /* MMT */
+  --blue: #008CFF;          --blue-light: #EAF5FF;
+  --text: #000000;          --text-body: #222222;
+  --text-2: #4A4A4A;        --text-3: #9B9B9B;
+  --bg: #F2F2F2;            --surface: #FFFFFF;     --border: #E7E7E7;
+  --red: #EB2026;
+  /* Myra */
+  --myra-navy: #0B1C36;     --myra-indigo: #4665AC;  --myra-blue: #4093EC;
+  --myra-grad: linear-gradient(90deg, #4665AC, #4093EC);
+  --myra-bubble: #F2F6FD;   --myra-bubble-border: #DCE6F5;  --myra-chip-border: #94BCF0;
+  /* Fit tags */
+  --good-bg: #E8F6EE;  --good: #1A7F4B;
+  --warn-bg: #FFF4E0;  --warn: #8A5300;
+  --bad-bg:  #FDECEC;  --bad:  #B42318;
+  /* Type */
+  --font-app: "Lato", system-ui, sans-serif;      /* MMT home */
+  --font-myra: "Poppins", system-ui, sans-serif;  /* Myra screens */
+  /* Shape */
+  --r-sm: 8px; --r-md: 14px; --r-lg: 18px; --r-xl: 24px; --r-pill: 999px;
+  --shadow: 0 2px 10px rgba(0,0,0,.10);
+  /* Phone */
+  --phone-w: 390px; --phone-h: 844px;
+  --bezel: 12px;
+  --screen-r: 32px;
+  --status-h: 41px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(.2,.8,.2,1);
+  --dur-screen: 280ms;
+  --shimmer-loop: 1.4s;  /* overridden at boot from timing.shimmerLoop (data/journey.js) */
+
+  /* Environment (around the phone) — neutral, quiet, not MMT/Myra */
+  --env-bg: #E9E9EB;
+  --env-panel: #F6F6F7;
+  --env-line: #DCDCDF;
+  --env-ink: #2B2B2E;
+  --env-ink-2: #6B6B70;
+  --env-ink-3: #9A9A9F;
+  --env-accent: #3A3A3E;
+  --env-font: "Poppins", system-ui, sans-serif;
+}

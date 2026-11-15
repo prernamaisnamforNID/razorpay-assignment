@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Myra for families-Razorpay task submission</title>
+  <meta name="description" content="Myra, MakeMyTrip's AI assistant, redesigned to plan a family weekend around a 3-year-old, two grandparents and a ₹45K budget. Razorpay × NID design assignment by Prerna Maisnam.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 6v12M17.2 9 6.8 15M6.8 9l10.4 6' stroke='%232F7BEA' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Hedvig+Letters+Serif&display=swap">
+  <link rel="stylesheet" href="docs/case-study.css">
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="module" src="docs/case-study.js"></script>
+</head>
+<body id="top">
+  <!-- Icon sprite (Lucide-style strokes; colour = currentColor). -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-asterisk" viewBox="0 0 24 24"><path d="M12 6v12M17.196 9 6.804 15M6.804 9l10.392 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" vector-effect="non-scaling-stroke"/><path d="M12 18h.01" vector-effect="non-scaling-stroke"/></g></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" vector-effect="non-scaling-stroke"/><circle cx="9" cy="7" r="4" vector-effect="non-scaling-stroke"/></g></symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0zM20 3v4M22 5h-4M4 17v2M5 18H3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 13 13"><path d="M5.968 1.524a.54.54 0 0 1 1.064 0l.57 3.01a1.08 1.08 0 0 0 .863.864l3.01.57a.54.54 0 0 1 0 1.064l-3.01.57a1.08 1.08 0 0 0-.863.863l-.57 3.01a.54.54 0 0 1-1.064 0l-.57-3.01a1.08 1.08 0 0 0-.863-.863l-3.01-.57a.54.54 0 0 1 0-1.064l3.01-.57a1.08 1.08 0 0 0 .863-.864z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" vector-effect="non-scaling-stroke"/><path d="m21 21-4.34-4.34" vector-effect="non-scaling-stroke"/></g></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83zM22 17.65l-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65M22 12.65l-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3zM12 9v4M12 17h.01" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></symbol>
+    <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></symbol>
+  </svg>
+
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <p class="topbar__crumb">
+        <span>Myra for families - Razorpay task submission</span>
+      </p>
+    </div>
+  </header>
+
+  <div class="page">
+    <nav class="toc" aria-label="Case study sections">
+      <ol class="toc__list">
+        <li><a class="toc__link" href="#overview"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">Overview</span></a></li>
+        <li><a class="toc__link" href="#who"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">Who I designed for</span></a></li>
+        <li><a class="toc__link" href="#research"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">Questions &amp; investigations</span></a></li>
+        <li><a class="toc__link" href="#insights"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">Insights</span></a></li>
+        <li><a class="toc__link" href="#directions"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">Directions</span></a></li>
+        <li><a class="toc__link" href="#solution"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">Solution</span></a></li>
+        <li><a class="toc__link" href="#how-ai-works"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">How AI works</span></a></li>
+        <li><a class="toc__link" href="#states"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">States &amp; edge cases</span></a></li>
+        <li><a class="toc__link" href="#micro-interactions"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">Micro-interactions</span></a></li>
+        <li><a class="toc__link" href="#ai-in-process"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">AI in my process</span></a></li>
+        <li><a class="toc__link" href="#decisions"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">Decisions &amp; tradeoffs</span></a></li>
+        <li><a class="toc__link" href="#whats-next"><svg class="toc__star" aria-hidden="true"><use href="#i-asterisk"/></svg><span class="toc__label">What's next</span></a></li>
+      </ol>
+      <a class="toc__top" href="#top"><span aria-hidden="true">↑</span> Back to top</a>
+    </nav>
+
+    <main class="content" id="main">
+
+      <!-- 1 · Overview (Figma 59:3) -->
+      <section class="section section--hero reveal" id="overview" aria-labelledby="overview-title">
+        <p class="eyebrow"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>A task submission by Prerna Maisnam</p>
+        <h1 class="hero__title" id="overview-title">Planning a family trip shouldn't mean planning around everyone, alone.</h1>
+        <p class="hero__lede">Myra, MakeMyTrip's AI assistant, redesigned to plan a weekend around a 3-year-old, two grandparents and a ₹45K budget — through conversation.</p>
+        <a class="btn" href="prototype/">
+          <svg class="icon-18" aria-hidden="true"><use href="#i-phone"/></svg>
+          Try the prototype
+          <svg class="icon-18" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+        </a>
+
+        <dl class="meta">
+          <div class="meta__item"><dt>Persona chosen</dt><dd>Family Planner</dd></div>
+          <div class="meta__item"><dt>Platform</dt><dd>MakeMyTrip mobile app (Myra AI)</dd></div>
+          <div class="meta__item"><dt>Tools</dt><dd><ul><li>Figma / Figma MCP</li><li>Claude / Claude Code</li><li>HTML/CSS/JS</li><li>VSCode</li><li>GitHub for hosting</li></ul></dd></div>
+        </dl>
+
+        <div class="visuals">
+          <article class="visual-card">
+            <div class="shot shot--hero" style="--shot-bg: linear-gradient(#7faee6, #cfe3f8)">
+              <img src="assets/screens/h01-home.png" width="619" height="860" alt="MakeMyTrip home screen with Myra in the bottom nav bar and a search bar that says 'Explore your next adventure with Myra'.">
+            </div>
+            <h3 class="visual-card__title"><svg class="icon-18" aria-hidden="true"><use href="#i-phone"/></svg>Starts where families already are</h3>
+            <p class="visual-card__text">Myra sits in the MakeMyTrip app's nav bar. One tap and the parent describes the trip in their own words.</p>
+          </article>
+          <article class="visual-card">
+            <div class="shot shot--hero" style="--shot-bg: linear-gradient(#9bbfea, #e4eef9)">
+              <img src="assets/screens/h03d-family-summary.png" width="619" height="860" alt="Myra chat: what Myra understood about the parents, then a 'Planning around your family' card — 5 people, 9 things to keep in mind.">
+            </div>
+            <h3 class="visual-card__title"><svg class="icon-18" aria-hidden="true"><use href="#i-users"/></svg>Plans around every person</h3>
+            <p class="visual-card__text">Needs for each person are asked once, confirmed with the parent, and checked against every suggestion.</p>
+          </article>
+          <article class="visual-card">
+            <div class="shot shot--hero" style="--shot-bg: linear-gradient(#86b3e8, #d8e8f8)">
+              <img src="assets/screens/h05-pondicherry-beaches.png" width="619" height="860" alt="Pondicherry page on the Beaches tab, 'Beaches that fit your family', each card checked for the family of 5.">
+            </div>
+            <h3 class="visual-card__title"><svg class="icon-18" aria-hidden="true"><use href="#i-sparkles"/></svg>Shows evidence, not a pamphlet</h3>
+            <p class="visual-card__text">Fit tags with reasons, honest gaps, and options left out — with why — so the parent can trust the plan.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 2 · Who I designed for (Figma 61:2) -->
+      <section class="section reveal" id="who" aria-labelledby="who-title">
+        <header class="section__head">
+          <p class="eyebrow"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>Who I designed for</p>
+          <h2 class="section__title" id="who-title">Three kinds of planners. I chose the one whose trip is hardest to get right.</h2>
+          <p class="section__lede">A family trip has the most needs pulling against each other — a child's routine, grandparents' pace, one budget. That's where an AI agent can do more than search and filter.</p>
+        </header>
+
+        <div class="personas">
+          <article class="persona is-chosen">
+            <div class="persona__visual">
+              <div class="glass">
+                <div class="glass__top">
+                  <span class="avatars" aria-hidden="true">
+                    <span style="--tint:#DFF0FF">Y</span><span style="--tint:#E7F6EC">H</span><span style="--tint:#FFF0DC">D</span><span style="--tint:#F3E8FF">M</span><span style="--tint:#FFE6EA">P</span>
+                  </span>
+                  <span class="badge badge--dark"><svg class="icon-12" aria-hidden="true"><use href="#i-check"/></svg>Chosen</span>
+                </div>
+                <p class="glass__text">Every person's routine and limits respected in one plan</p>
+              </div>
+            </div>
+            <h3 class="persona__name">The Family Trip Planner</h3>
+            <p class="persona__desc">Working parent, 32–42, planning for kids and grandparents</p>
+            <p class="persona__why"><svg class="icon-15" aria-hidden="true"><use href="#i-check"/></svg><span>Richest constraints, clearest value for an AI agent, and I could reach real families to talk to.</span></p>
+          </article>
+          <article class="persona">
+            <div class="persona__visual">
+              <div class="glass">
+                <div class="glass__top">
+                  <span class="avatars" aria-hidden="true"><span style="--tint:#E8EAF0">A</span><span style="--tint:#EEF0F3">R</span></span>
+                  <span class="badge">Explored</span>
+                </div>
+                <p class="glass__text">"Where can I go this weekend for ₹15K?"</p>
+              </div>
+            </div>
+            <h3 class="persona__name">The Weekend Escaper</h3>
+            <p class="persona__desc">Young professional, 24–30, quick getaways on a budget</p>
+          </article>
+          <article class="persona">
+            <div class="persona__visual">
+              <div class="glass">
+                <div class="glass__top">
+                  <span class="avatars" aria-hidden="true"><span style="--tint:#E8EAF0">S</span><span style="--tint:#EEF0F3">K</span><span style="--tint:#E8EAF0">N</span><span style="--tint:#EEF0F3">V</span></span>
+                  <span class="badge">Explored</span>
+                </div>
+                <p class="glass__text">Getting everyone to agree on dates, budget and plans</p>
+              </div>
+            </div>
+            <h3 class="persona__name">The Group Coordinator</h3>
+            <p class="persona__desc">Friend who organises the group trip for 6–10 people</p>
+          </article>
+        </div>
+
+        <div class="profile">
+          <div class="profile__main">
+            <p class="profile__label">The Family Trip Planner</p>
+            <blockquote class="profile__quote">“MakeMyTrip is just the starting point. You have to be in control, because it's your trip.”</blockquote>
+            <p class="profile__desc">The one who thinks of everyone. Plans the trip, checks every detail, and answers to the whole family.</p>
+            <div class="profile__trip">
+              <p class="label-sm">This trip</p>
+              <ul class="family">
+                <li><span style="--tint:#DFF0FF">Y</span>Anjali (planner)</li>
+                <li><span style="--tint:#E7F6EC">H</span>Husband</li>
+                <li><span style="--tint:#FFF0DC">D</span>Daughter, 3</li>
+                <li><span style="--tint:#F3E8FF">M</span>Mum</li>
+                <li><span style="--tint:#FFE6EA">P</span>Papa</li>
+              </ul>
+              <p class="profile__route">Bengaluru → Pondicherry · Fri–Sun · ₹45K</p>
+            </div>
+          </div>
+          <ul class="facts">
+            <li><span class="facts__icon"><svg class="icon-18" aria-hidden="true"><use href="#i-search"/></svg></span><div><h3>How they plan</h3><p>Google, YouTube and now AI. Trusts other travellers more than listings.</p></div></li>
+            <li><span class="facts__icon"><svg class="icon-18" aria-hidden="true"><use href="#i-layers"/></svg></span><div><h3>How they book</h3><p>Across 4+ platforms — whichever they trust for that part of the trip.</p></div></li>
+            <li><span class="facts__icon"><svg class="icon-18" aria-hidden="true"><use href="#i-heart"/></svg></span><div><h3>What they need</h3><p>A plan that respects everyone's routine and limits, without checking it all themselves.</p></div></li>
+            <li><span class="facts__icon"><svg class="icon-18" aria-hidden="true"><use href="#i-alert"/></svg></span><div><h3>What frustrates them</h3><p>Listings that don't match reality, plans scattered across apps, surprises at checkout.</p></div></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 3 · Questions & investigations (Figma 63:6) -->
+      <section class="section reveal" id="research" aria-labelledby="research-title">
+        <header class="section__head">
+          <p class="eyebrow"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>Questions &amp; investigations</p>
+          <h2 class="section__title" id="research-title">I asked three planners to walk me through the last family trip they actually took.</h2>
+          <p class="section__lede">15–20 minute conversations about a real trip — not what they'd want, but what they did, step by step.</p>
+        </header>
+
+        <h3 class="block-title">What I wanted to find out</h3>
+        <ol class="questions">
+          <li><span class="questions__num">01</span><span>How do families decide where, when and how they'll travel?</span></li>
+          <li><span class="questions__num">02</span><span>What do they check before booking and for whom?</span></li>
+          <li><span class="questions__num">03</span><span>Where do they book each part, and why there?</span></li>
+          <li><span class="questions__num">04</span><span>How does the plan change between the first idea and the trip?</span></li>
+          <li><span class="questions__num">05</span><span>Where does AI help today, and where does it fail?</span></li>
+        </ol>
+
+        <div class="participants">
+          <article class="participant">
+            <h3 class="participant__head"><span class="avatar-40" style="--tint:#FFE6EA">P1</span>Mother of two who plans for three generations</h3>
+            <dl>
+              <div><dt>Family</dt><dd>Kids in Grade 4 and Grade 8; often travels with 3 elders</dd></div>
+              <div><dt>Trips</dt><dd>Delhi–Agra, Narmada cruise; now an 8-person girls' trip to Vagamon</dd></div>
+              <div><dt>Plans</dt><dd>About 3 months ahead</dd></div>
+            </dl>
+          </article>
+          <article class="participant">
+            <h3 class="participant__head"><span class="avatar-40" style="--tint:#DFF0FF">P2</span>Father, 39, who plans everything around a 3-year-old</h3>
+            <dl>
+              <div><dt>Family</dt><dd>Wife (37) and daughter (3)</dd></div>
+              <div><dt>Trip</dt><dd>Pondicherry, 2 days, Nov 2025 — went by car</dd></div>
+              <div><dt>Plans</dt><dd>About 2 weeks ahead</dd></div>
+            </dl>
+          </article>
+          <article class="participant">
+            <h3 class="participant__head"><span class="avatar-40" style="--tint:#E7F6EC">P3</span>Travels with a big family and checks everything twice</h3>
+            <dl>
+              <div><dt>Family</dt><dd>Large family group</dd></div>
+              <div><dt>Trips</dt><dd>Goa and other family holidays</dd></div>
+              <div><dt>Plans</dt><dd>Itinerary and cabs through a travel agent</dd></div>
+            </dl>
+          </article>
+        </div>
+
+        <h3 class="block-title block-title--board">Everything I heard</h3>
+        <p class="block-sub">Each note is colour-coded by the insight it fed into.</p>
+        <ul class="legend" data-legend aria-label="Insights — hover or focus one to highlight its notes"></ul>
+        <div class="board" data-board></div>
+      </section>
+
+      <!-- 4 · Insights → design principles (Figma 65:2) -->
+      <section class="section reveal" id="insights" aria-labelledby="insights-title">
+        <header class="section__head">
+          <p class="eyebrow"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>Insights → design principles</p>
+          <h2 class="section__title" id="insights-title">Six patterns kept coming up. Each became a principle, and each principle shows up on a screen.</h2>
+          <p class="section__lede">The colours match the sticky notes: every principle traces back to what families actually told me.</p>
+        </header>
+        <div class="principles">
+          <div class="principles__labels" aria-hidden="true">
+            <span>What I heard + the human need</span><span></span><span>So the design should</span><span>Where it shows up</span>
+          </div>
+          <ol class="principles__rows" data-principles></ol>
+        </div>
+      </section>
+
+      <!-- 5 · Directions (Figma 69:2) -->
+      <section class="section reveal" id="directions" aria-labelledby="directions-title">
+        <header class="section__head">
+          <p class="eyebrow"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>Directions explored</p>
+          <h2 class="section__title" id="directions-title">Three ways to plan around a family. I chose the one where the AI does the hard part.</h2>
+          <p class="section__lede">All three put people first and follow how families really plan: explore places early, lock in the stay and travel, keep the days open. They differ in who does the joining-up.</p>
+        </header>
+        <div class="directions" data-directions></div>
+
+        <div class="evolution">
+          <p class="evolution__label">How direction B evolved · lo-fi → hi-fi</p>
+          <h3 class="evolution__title">Five changes I pushed for after testing the lo-fi against what families told me.</h3>
+          <ol class="evolution__rows" data-evolution></ol>
+        </div>
+      </section>
+
+      <!-- 6–12 · Not designed yet -->
+      <section class="section section--soon reveal" id="solution" aria-labelledby="solution-title">
+        <h2 class="eyebrow" id="solution-title"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>Solution</h2>
+        <p class="soon">Coming soon — the hi-fi screens and the embedded prototype.</p>
+      </section>
+      <section class="section section--soon reveal" id="how-ai-works" aria-labelledby="how-ai-title">
+        <h2 class="eyebrow" id="how-ai-title"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>How AI works</h2>
+        <p class="soon">Coming soon — what Myra does, and how the parent stays in control.</p>
+      </section>
+      <section class="section section--soon reveal" id="states" aria-labelledby="states-title">
+        <h2 class="eyebrow" id="states-title"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>States &amp; edge cases</h2>
+        <p class="soon">Coming soon — loading, empty, error, over budget and over capacity.</p>
+      </section>
+      <section class="section section--soon reveal" id="micro-interactions" aria-labelledby="micro-title">
+        <h2 class="eyebrow" id="micro-title"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>Micro-interactions</h2>
+        <p class="soon">Coming soon — short loops, each with why it exists.</p>
+      </section>
+      <section class="section section--soon reveal" id="ai-in-process" aria-labelledby="ai-process-title">
+        <h2 class="eyebrow" id="ai-process-title"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>AI in my process</h2>
+        <p class="soon">Coming soon — where AI helped, and what I accepted, changed or rejected.</p>
+      </section>
+      <section class="section section--soon reveal" id="decisions" aria-labelledby="decisions-title">
+        <h2 class="eyebrow" id="decisions-title"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>Decisions &amp; tradeoffs</h2>
+        <p class="soon">Coming soon — the key calls and what they cost.</p>
+      </section>
+      <section class="section section--soon reveal" id="whats-next" aria-labelledby="next-title">
+        <h2 class="eyebrow" id="next-title"><svg class="eyebrow__star" aria-hidden="true"><use href="#i-asterisk"/></svg>What's next</h2>
+        <p class="soon">Coming soon — what I'd do with more time.</p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

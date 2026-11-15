@@ -1,0 +1,81 @@
+/* H02 · Myra home — Figma node 45:2. Values are from Figma. */
+
+.h02 { background: var(--surface); font-family: var(--font-myra); }
+
+/* Header (45:9) */
+.h02-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 12px 8px;
+}
+
+/* Scroll (45:20) */
+.h02-scroll { padding: 28px 20px 16px; }
+
+.h02-greeting {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font: 700 32px/normal var(--font-myra);
+  white-space: nowrap;
+}
+.h02-greeting__hi { color: var(--myra-navy); }
+.h02-greeting__name {
+  background: var(--myra-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.h02-intro { margin: 4px 0 0; font: 400 15px/22px var(--font-myra); color: var(--text-body); }
+
+/* 4px gap + 28px spacer + 4px gap above, 4 + 14 + 4 below (Figma 45:28 / 45:30) */
+.h02-label {
+  margin: 36px 0 22px;
+  font: 500 13px/normal var(--font-myra);
+  letter-spacing: .8px;
+  color: var(--text-2);
+}
+
+/* Suggested prompts (45:31) */
+.h02-cards { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.h02-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 18px 16px;
+  border: 1px solid #ECECEC;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  text-align: left;
+}
+.h02-card.is-journey { border-color: var(--myra-chip-border); }
+.h02-card__thumb {
+  position: relative;
+  flex: none;
+  width: 62px;
+  height: 38px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.h02-card__thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.h02-card__text { flex: 1; min-width: 0; font: 500 14px/20px var(--font-myra); color: var(--text); }
+
+/* Entry: greeting fades + rises 8px, then cards stagger in (60ms apart, 240ms each). */
+.h02.is-entering [data-enter] { animation: h02-rise 240ms var(--ease-out) both; }
+.h02.is-entering .h02-hello { animation-delay: 120ms; }
+.h02.is-entering .h02-label { animation-delay: 220ms; }
+.h02.is-entering .h02-cards [data-enter] { animation-delay: calc(280ms + var(--i) * 60ms); }
+@keyframes h02-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .h02.is-entering [data-enter] { animation-name: h02-fade; }
+  @keyframes h02-fade { from { opacity: 0; } to { opacity: 1; } }
+}

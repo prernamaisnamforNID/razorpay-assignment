@@ -1,0 +1,66 @@
+/* Shared Myra components. */
+
+/* Circle header button (Figma 45:10 / 45:15) */
+.myra-circle {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+/* Input bar (Figma 45:47) — pinned to the bottom of Myra screens */
+.myra-input {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 18px max(26px, env(safe-area-inset-bottom, 0px));
+  border: 1px solid #EFEFEF;
+  border-bottom: 0;
+  border-radius: 22px 22px 0 0;
+  background: #FAFAFB;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  font-family: var(--font-myra);
+}
+.myra-input__field { display: block; width: 100%; text-align: left; }
+.myra-input__text {
+  display: block;
+  font: 400 16px/normal var(--font-myra);
+  color: var(--text-body);
+  overflow-wrap: anywhere;
+}
+.myra-input__text.is-placeholder { color: var(--text-3); }
+.myra-input__text.is-typing::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--myra-blue);
+  animation: caret 900ms steps(1) infinite;
+}
+@keyframes caret { 50% { opacity: 0; } }
+.myra-input__actions { display: flex; justify-content: flex-end; }
+.myra-input__speak { display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .myra-input__text.is-typing::after { animation: none; }
+}
+
+/* Chat-screen header circles use a slightly stronger shadow (Figma 25:10) */
+.myra-circle--chat { box-shadow: 0 2px 10px rgba(0,0,0,.1); }
+
+/* Chat-screen input bar (Figma 25:126) */
+.myra-input--chat {
+  gap: 12px;
+  padding: 16px 16px max(24px, env(safe-area-inset-bottom, 0px));
+  border: 0;
+  border-radius: 20px 20px 0 0;
+  background: var(--surface);
+  box-shadow: 0 2px 10px rgba(0,0,0,.1);
+}

@@ -1,0 +1,594 @@
+/* Myra chat screens — Figma 25:2 / 28:2. Values are from Figma unless noted. */
+
+.chat-screen { background: var(--surface); font-family: var(--font-myra); }
+
+/* Header (25:9) */
+.chat-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 12px 8px;
+}
+
+/* Chat log (25:19) */
+.chat-log { display: flex; flex-direction: column; gap: 12px; padding: 8px 16px 16px; }
+
+.chat-user { display: flex; justify-content: flex-end; }
+.chat-user__bubble {
+  max-width: 290px;
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--myra-bubble-border);
+  border-radius: 18px 18px 4px 18px;
+  background: var(--myra-bubble);
+  font: 400 15px/22px var(--font-myra);
+  color: var(--text);
+  transform-origin: bottom right;
+}
+.chat-time { margin: 0; font: 400 12px/normal var(--font-myra); color: var(--text-3); }
+.chat-time--right { text-align: right; }
+
+.chat-label { display: flex; align-items: flex-start; gap: 2px; }
+.chat-label__name {
+  font: 600 18px/normal var(--font-myra);
+  background: var(--myra-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.chat-text { margin: 0; font: 400 15px/22px var(--font-myra); color: var(--text); }
+
+/* Typing dots (not in Figma) */
+.chat-typing { display: flex; gap: 5px; padding: 6px 0; }
+.chat-typing i {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--myra-chip-border);
+  animation: typing 1s ease-in-out infinite;
+}
+.chat-typing i:nth-child(2) { animation-delay: .15s; }
+.chat-typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes typing { 0%, 60%, 100% { transform: none; opacity: .5; } 30% { transform: translateY(-4px); opacity: 1; } }
+
+/* Chips — starter chip from Figma 25:118; primary variant is new (gradient) */
+.chip {
+  flex: none;
+  padding: 9px 14px;
+  border: 1px solid var(--myra-chip-border);
+  border-radius: 20px;
+  background: var(--surface);
+  font: 400 14px/normal var(--font-myra);
+  color: var(--text-body);
+  white-space: nowrap;
+}
+.chip--primary { border-color: transparent; background: var(--myra-grad); color: #fff; font-weight: 500; }
+
+/* "Does this look right?" (not in Figma) */
+.chat-confirm { display: flex; flex-direction: column; gap: 10px; }
+.chat-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---------- Shimmer text ---------- */
+.shimmer {
+  background: linear-gradient(90deg, var(--text-2) 0%, var(--text-2) 40%, #C9D3E3 50%, var(--text-2) 60%, var(--text-2) 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer var(--shimmer-loop, 1.4s) linear infinite;
+}
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0% 0; } }
+
+/* ---------- Working on your request… (from the live-app reference) ---------- */
+.mw {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #FAFAFA;
+  overflow: hidden;
+}
+.mw__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 14px;
+  font: 500 14px/20px var(--font-myra);
+  color: var(--text-2);
+  text-align: left;
+}
+.mw__head:disabled { cursor: default; }
+.mw__title { flex: 1; min-width: 0; }
+.mw__chev { transition: transform 260ms var(--ease-out); }
+.mw.is-open .mw__chev { transform: rotate(180deg); }
+.mw__body { overflow: hidden; }
+.mw__inner { display: flex; flex-direction: column; gap: 8px; padding: 0 12px 12px; }
+.mw__step {
+  padding: 12px 14px;
+  border: 1px solid #EFEFEF;
+  border-radius: 12px;
+  background: var(--surface);
+}
+.mw__step-title { margin: 0; min-height: 20px; font: 500 14px/20px var(--font-myra); color: var(--text-body); }
+.mw__step-desc { margin: 2px 0 0; min-height: 17px; font: 400 12px/17px var(--font-myra); color: var(--text-2); }
+.mw__step .shimmer.mw__step-title { --c: var(--text-body); }
+.mw__step--done .mw__step-title::before { content: "✓ "; color: var(--good); }
+
+/* ---------- Trip summary (25:29) ---------- */
+.ts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: #FAFBFD;
+  box-shadow: var(--shadow);
+}
+.ts__head { display: flex; align-items: center; gap: 12px; padding: 0 16px; }
+.ts__check {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: 20px;
+  background: var(--myra-grad);
+  transition: background-color 300ms ease;
+}
+.ts.is-confirmed .ts__check { background: var(--good); }
+.ts__titles { display: flex; flex-direction: column; min-width: 0; }
+.ts__title { font: 600 16px/normal var(--font-myra); color: var(--text); }
+.ts__sub { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font: 400 13px/normal var(--font-myra); color: var(--text-2); }
+.ts__confirmed {
+  padding: 1px 8px;
+  border-radius: var(--r-pill);
+  background: var(--good-bg);
+  color: var(--good);
+  font: 500 11px/18px var(--font-myra);
+}
+
+.ts__scroller {
+  display: flex;
+  gap: 10px;
+  padding: 2px 16px 6px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 16px;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.ts__scroller::-webkit-scrollbar { display: none; }
+.ts__scroller.is-dragging { scroll-snap-type: none; cursor: grabbing; }
+.ts-card {
+  flex: none;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  scroll-snap-align: start;
+  text-align: left;
+}
+.ts-card__top { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+.ts-card__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  background: var(--blue-light);
+}
+.ts-card__label { font: 500 11px/normal var(--font-myra); letter-spacing: .8px; color: var(--text-2); }
+.ts-card__value { font: 600 16px/21px var(--font-myra); color: var(--text); }
+.ts-card__note { font: 400 12px/17px var(--font-myra); color: var(--text-2); }
+.ts-avatars { display: flex; }
+.ts-avatar {
+  display: grid;
+  place-items: center;
+  width: 28px; height: 28px;
+  margin-right: -6px;
+  border: 2px solid #fff;
+  border-radius: 14px;
+  font: 600 12px/normal var(--font-myra);
+  color: var(--text-body);
+}
+.ts-avatar:last-child { margin-right: 0; }
+
+.ts__pager { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.ts__pill {
+  padding: 3px 12px;
+  border-radius: 12px;
+  background: var(--myra-grad);
+  font: 500 12px/normal var(--font-myra);
+  color: #fff;
+}
+.ts__dot { width: 6px; height: 6px; border-radius: 50%; background: #D3D8DE; }
+
+/* ---------- Question card (25:108 + skip row 28:135) ---------- */
+.qc {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--myra-bubble-border);
+  border-radius: 18px;
+  background: #F4F8FF;
+}
+.qc__who { display: flex; align-items: center; gap: 10px; }
+.qc__avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px; height: 36px;
+  border-radius: 18px;
+  font: 600 14px/normal var(--font-myra);
+  color: var(--text-body);
+}
+.qc__titles { display: flex; flex-direction: column; }
+.qc__name { font: 600 14px/normal var(--font-myra); color: var(--text); }
+.qc__progress { font: 400 12px/normal var(--font-myra); color: var(--text-2); }
+.qc__text { margin: 0; font: 400 15px/22px var(--font-myra); color: var(--text); }
+.qc__starter { margin: 0; font: 400 12px/normal var(--font-myra); color: var(--text-2); }
+.qc__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.qc__divider { width: 100%; height: 1px; margin: 0; border: 0; background: #DBE5F5; }
+.qc__skip-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.qc__skip-note { font: 400 12px/normal var(--font-myra); color: var(--text-2); }
+.qc__skip {
+  flex: none;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font: 500 14px/normal var(--font-myra);
+  color: var(--blue);
+}
+
+/* ---------- Edit sheet content (placeholder) ---------- */
+.edit__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.edit__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.edit__row.is-focused {
+  border-color: var(--myra-blue);
+  background: #F4F8FF;
+  box-shadow: 0 0 0 3px rgba(64,147,236,.15);
+}
+.edit__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.edit__label { font: 500 11px/normal var(--font-myra); letter-spacing: .8px; color: var(--text-2); }
+.edit__value { font: 600 15px/20px var(--font-myra); color: var(--text); }
+.edit__note { font: 400 12px/17px var(--font-myra); color: var(--text-2); }
+.edit__hint { margin: 14px 0; font: 400 12px/17px var(--font-myra); color: var(--text-2); }
+.edit__done {
+  width: 100%;
+  height: 48px;
+  border-radius: var(--r-pill);
+  background: var(--myra-grad);
+  font: 600 15px/normal var(--font-myra);
+  color: #fff;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer { animation: none; background: none; color: var(--text-2); }
+  .chat-typing i { animation: typing-fade 1s ease-in-out infinite; }
+  @keyframes typing-fade { 50% { opacity: .3; } }
+  .mw__chev { transition: none; }
+}
+
+/* Phone layout: leave room so the floating "Try saying…" button never covers the last message. */
+@media (max-width: 599px) {
+  .chat-log { padding-bottom: 72px; }
+}
+
+/* ======================================================================
+   Family conversation — Figma 48:2 / 48:89 / 48:177
+   ====================================================================== */
+
+/* Stacked avatars (question card 48:59) — a single avatar has no ring */
+.qc__avatar-stack, .uc__avatar-stack, .fs__avatar-stack { display: flex; flex: none; }
+.qc__avatar-stack > * + *, .uc__avatar-stack > * + *, .fs__avatar-stack > * + * { margin-left: -10px; }
+.qc__avatar-stack:has(> :nth-child(2)) .qc__avatar { border: 2px solid #fff; }
+
+/* Selected starter chips + Send (not in Figma) */
+.chip[aria-pressed="true"] {
+  border-color: var(--myra-blue);
+  background: var(--myra-bubble);
+  color: var(--myra-indigo);
+  font-weight: 500;
+}
+.qc__send { padding: 8px 14px; }
+.qc.is-answered .qc__chips,
+.qc.is-answered .qc__skip-row { opacity: .45; }
+.qc.is-answered button { cursor: default; }
+
+/* Understood card (48:30) */
+.uc {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.uc__head { display: flex; align-items: center; gap: 10px; }
+.uc__avatar {
+  display: grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  border: 2px solid #fff;
+  border-radius: 15px;
+  font: 600 11px/normal var(--font-myra);
+  color: var(--text-body);
+}
+.uc__title { flex: 1; min-width: 0; margin: 0; font: 600 14px/20px var(--font-myra); color: var(--text); }
+.uc__pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.uc__empty { font: 400 13px/normal var(--font-myra); color: var(--text-3); }
+.uc__foot { display: flex; align-items: center; gap: 6px; font: 400 11px/normal var(--font-myra); color: var(--text-3); }
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px 6px 12px;
+  border: 1px solid #D5E1FB;
+  border-radius: 16px;
+  background: #EEF3FF;
+  font: 500 13px/normal var(--font-myra);
+  color: var(--myra-indigo);
+}
+.pill__label { font: inherit; color: inherit; white-space: nowrap; }
+.pill__x { display: grid; place-items: center; margin: -4px; padding: 4px; }
+
+/* "Next: …" hint (48:312) */
+.chat-next { display: flex; align-items: center; gap: 6px; margin: 0; font: 400 12px/normal var(--font-myra); color: var(--text-2); }
+
+/* Family summary (48:229) */
+.fs {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: #FAFBFD;
+  box-shadow: var(--shadow);
+}
+.fs__head { display: flex; align-items: center; gap: 12px; padding-bottom: 12px; }
+.fs__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: 20px;
+  background: var(--myra-grad);
+}
+.fs.is-confirmed .fs__icon { background: var(--good); }
+.fs__titles { display: flex; flex-direction: column; min-width: 0; }
+.fs__title { font: 600 16px/normal var(--font-myra); color: var(--text); }
+.fs__sub { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font: 400 12px/normal var(--font-myra); color: var(--text-2); }
+.fs__confirmed {
+  padding: 1px 8px;
+  border-radius: var(--r-pill);
+  background: var(--good-bg);
+  color: var(--good);
+  font: 500 11px/18px var(--font-myra);
+}
+.fs__person { display: flex; align-items: flex-start; gap: 10px; padding: 12px 0; border-top: 1px solid #ECEEF2; }
+.fs__avatar {
+  display: grid;
+  place-items: center;
+  width: 28px; height: 28px;
+  border: 2px solid #fff;
+  border-radius: 14px;
+  font: 600 11px/normal var(--font-myra);
+  color: var(--text-body);
+}
+.fs__body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.fs__name-row { display: flex; align-items: center; justify-content: space-between; }
+.fs__name { font: 600 13px/normal var(--font-myra); color: var(--text); }
+.fs__edit { display: grid; place-items: center; margin: -6px; padding: 6px; }
+.fs__pills { display: flex; flex-wrap: wrap; gap: 5px; }
+.fs__pill {
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  font: 400 12px/normal var(--font-myra);
+  color: var(--text-body);
+  white-space: nowrap;
+}
+.fs__none { font: 400 12px/normal var(--font-myra); color: var(--text-3); }
+.fs__lock {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 12px;
+  background: #F2F4F7;
+}
+.fs__lock .icon { margin-top: 1px; }
+.fs__lock p { flex: 1; margin: 0; font: 400 11px/16px var(--font-myra); color: var(--text-2); }
+
+/* Family edit sheet */
+.fedit__row { align-items: flex-start; }
+.fedit__pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+
+/* ======================================================================
+   Plan checklist + paths + itinerary — Figma 53:2 / 53:115 / 53:236
+   ====================================================================== */
+
+/* With the checklist showing, the header tightens and the chat gets more top room (53:9, 53:50). */
+.chat-screen.has-plan .chat-head { padding-bottom: 6px; }
+.chat-screen.has-plan .chat-log { padding-top: 12px; }
+
+/* Plan checklist (53:19) + hairline (53:49) */
+.plan { flex: none; border-bottom: 1px solid #EEF0F3; overflow: hidden; }
+.plan__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.plan__row::-webkit-scrollbar { display: none; }
+.plan__step {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px 5px 8px;
+  border: 1px solid #E3E6EB;
+  border-radius: 14px;
+  background: #F2F4F7;
+  font: 500 12px/normal var(--font-myra);
+  color: var(--text-2);
+  white-space: nowrap;
+  transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease, transform 120ms ease;
+}
+.plan__step.is-done { border-color: #BFE5CD; background: var(--good-bg); color: var(--good); }
+.plan__step.is-draft { border-color: #F5DEB3; background: var(--warn-bg); color: var(--warn); }
+
+/* Path options (53:62) */
+.paths { display: flex; flex-direction: column; gap: 10px; }
+.path {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  text-align: left;
+}
+.path.is-featured { border: 1.5px solid var(--myra-chip-border); box-shadow: var(--shadow); }
+.path__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 10px;
+  background: var(--myra-grad);
+  font: 500 11px/normal var(--font-myra);
+  color: #fff;
+}
+.path__row { display: flex; align-items: center; gap: 12px; width: 100%; }
+.path__tile {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: var(--blue-light);
+}
+.path__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.path__title { font: 600 15px/normal var(--font-myra); color: var(--text); }
+.path__desc { font: 400 12px/17px var(--font-myra); color: var(--text-2); }
+
+/* Order hint (53:105) */
+.info-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #F7F9FC;
+}
+.info-hint .icon { margin-top: 1px; }
+.info-hint p { flex: 1; margin: 0; font: 400 12px/17px var(--font-myra); color: var(--text-2); }
+
+/* Known vs missing (53:175) */
+.known {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.known__group { display: flex; flex-direction: column; gap: 6px; }
+.known__label { margin: 0; font: 500 11px/normal var(--font-myra); letter-spacing: .8px; color: var(--text-2); }
+.known__row { display: flex; align-items: center; gap: 8px; font: 400 13px/normal var(--font-myra); color: var(--text-body); }
+.known__row.is-missing { color: var(--text-2); }
+.known__dot {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px; height: 22px;
+  border-radius: 11px;
+  background: #F2F4F7;
+}
+.known__dot.is-known { background: var(--good-bg); }
+.known__divider { width: 100%; height: 1px; margin: 0; border: 0; background: #ECEEF2; }
+
+/* Chips with an icon (53:219) */
+.chip--icon { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Draft label (53:296) */
+.draft-label {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  padding: 4px 10px 4px 8px;
+  border-radius: 10px;
+  background: var(--warn-bg);
+  font: 500 11px/normal var(--font-myra);
+  color: var(--warn);
+}
+
+/* Day card (53:302) */
+.day {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.day__head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; white-space: nowrap; }
+.day__title { font: 600 15px/normal var(--font-myra); color: var(--text); }
+.day__tag { font: 400 12px/normal var(--font-myra); color: var(--text-2); }
+.day__slot { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; }
+.day__slot + .day__slot { border-top: 1px solid #F0F2F5; }
+.day__dot {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px; height: 26px;
+  border-radius: 13px;
+  background: var(--blue-light);
+}
+.day__body { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.day__time { font: 500 11px/normal var(--font-myra); color: var(--text-2); }
+.day__text { font: 500 13px/normal var(--font-myra); color: var(--text); }
+.open-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px 5px 8px;
+  border: 1px dashed var(--myra-chip-border);
+  border-radius: 10px;
+  background: #F7F9FC;
+  font: 500 12px/normal var(--font-myra);
+  color: var(--myra-indigo);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plan__step { transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease; }
+}

@@ -1,0 +1,106 @@
+/* App chrome inside the phone: status bar, screen stack, press states, toast. */
+
+.app {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: var(--font-app);
+  color: var(--text);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  isolation: isolate;
+}
+:where(.app) button { border: 0; background: none; padding: 0; margin: 0; cursor: pointer; text-align: inherit; }
+.app :focus:not(:focus-visible) { outline: none; }
+
+/* Status bar (Figma 40:3) sits over every screen and does not slide. */
+.app__status {
+  position: absolute;
+  z-index: 5;
+  top: 0; left: 0; right: 0;
+  height: var(--status-h);
+  padding: 14px 28px 8px 32px;
+  font: 700 16px/normal var(--font-app);
+  pointer-events: none;
+}
+.app[data-theme="dark"] .app__status { color: #fff; }
+.app__status { display: flex; align-items: center; justify-content: space-between; }
+
+/* Signal / wifi / battery blocks — only on screens that show them in Figma (e.g. H02). */
+.app__status-icons { display: none; align-items: center; gap: 5px; }
+.app[data-status-icons] .app__status-icons { display: flex; }
+.app__status-icons i { display: block; height: 11px; border-radius: 3px; background: currentColor; }
+.app__status-icons i:nth-child(1) { width: 17px; }
+.app__status-icons i:nth-child(2) { width: 15px; }
+.app__status-icons i:nth-child(3) { width: 25px; height: 12px; }
+
+/* Screen stack: every screen fills the app; only its .screen__scroll scrolls. */
+.app__stack { position: absolute; inset: 0; overflow: hidden; }
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--status-h);
+  background: var(--bg);
+  overflow: hidden;
+}
+.screen__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.screen__scroll::-webkit-scrollbar { display: none; }
+
+/* Press state — no hover styles inside the app. */
+.tap { transition: transform 120ms ease; }
+.tap:active { transform: scale(.97); }
+
+/* Shared asset crop: a window onto the MMT home screenshot. */
+.sprite { position: relative; display: block; flex: none; overflow: hidden; }
+.sprite img { position: absolute; max-width: none; pointer-events: none; }
+.icon { display: block; flex: none; }
+
+/* Toast — slides up above the bottom bar. */
+.app__toasts {
+  position: absolute;
+  z-index: 20;
+  left: 16px; right: 16px;
+  bottom: 112px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--r-md);
+  background: rgba(20,20,22,.94);
+  color: #fff;
+  font: 500 13px/1.4 var(--font-myra);
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 220ms ease, transform 280ms var(--ease-out);
+}
+.toast.is-in { opacity: 1; transform: none; }
+.toast__action { flex: none; color: #7CC0FF; font-weight: 600; }
+
+/* Phone layout: the device draws the real status bar. */
+@media (max-width: 599px) {
+  .app { --status-h: env(safe-area-inset-top, 0px); }
+  .app__status { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tap { transition: none; }
+  .toast { transform: none; transition: opacity 200ms ease; }
+}
