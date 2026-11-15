@@ -22,3 +22,12 @@
   scrollbar-width: none;
 }
 .sheet__body::-webkit-scrollbar { display: none; }
+
+/* Full-height page sheet (H05, Figma 32:136): starts 13px under the status bar. */
+.sheet--page {
+  top: 54px;
+  max-height: none;
+  overflow: hidden;
+  background: var(--bg);
+  box-shadow: none;
+}

@@ -4,10 +4,10 @@
      1 user message → 2 Myra working → 3 trip summary, waits for "Looks right"
      4 daughter question → 5 parents question → 6 you-two question
      7 family summary, waits → 8 confirmed → H03e where to start (+ plan checklist)
-     → H08a/H08b itinerary in this chat, or H04 / H07a (see h03-plan.js)
-   Copy + timings: data/journey.js (h03, familyGroups, family, timing). */
+     → H04 Pondicherry or H08a/H08b itinerary in this chat, or H07a (see h03-plan.js)
+   Copy + timings: data/journey.js (h03, familyGroups, family, destination, timing). */
 import { html, esc, sprite, SHEET_MYRA } from "../dom.js";
-import { h03 as copy, myraHome, family as fam, familyGroups, promptsFor, paths } from "../../data/journey.js";
+import { h03 as copy, myraHome, family as fam, familyGroups, promptsFor, paths, destination, beachesPage as beachesCopy } from "../../data/journey.js";
 import { getState, setState, subscribe } from "../state.js";
 import { planChecklist } from "../components/plan-checklist.js";
 import { planFlow } from "./h03-plan.js";
@@ -73,7 +73,11 @@ export default {
 
     const run = createRun({ instant: replay });
     el.run = run;
-    el.convo = conversation({ log, input, ctx, run, message, seed, replayActions: replay ? [...reached.actions] : [] });
+    el.convo = conversation({
+      log, input, ctx, run, message, seed,
+      replayActions: replay ? [...reached.actions] : [],
+      openBeaches: jump === "h05", // tracker jump to H05: open the page once the chat is rebuilt
+    });
 
     const checklist = planChecklist({ onStep: (id) => el.convo.planStep(id) });
     el.querySelector(".chat-head").after(checklist);
@@ -109,10 +113,13 @@ function seedActions(target) {
     const opt = paths.options.find((o) => o.id === "itinerary");
     actions.push({ type: "path", id: opt.id, text: opt.title, source: "tapped" });
   }
+  if (target === "h04" || target === "h05") {
+    actions.push({ type: "path", id: "places", text: destination.userText, source: "tapped" });
+  }
   return actions;
 }
 
-function conversation({ log, input, ctx, run, message, seed, replayActions }) {
+function conversation({ log, input, ctx, run, message, seed, replayActions, openBeaches }) {
   let instant = run.instant; // true while replaying; the chat goes live after
   const time = () => clock(copy.timestamp);
   const stamp = (source) => (source ? `${fam.sources[source]} · ${time()}` : time());
@@ -174,6 +181,7 @@ function conversation({ log, input, ctx, run, message, seed, replayActions }) {
 
     for (const a of replayActions) await replayAction(a);
     instant = run.instant = false;
+    if (openBeaches) plan.openBeaches();
   }
 
   function confirmBlock(c, onYes, onChange, nextHint) {
@@ -381,6 +389,8 @@ function conversation({ log, input, ctx, run, message, seed, replayActions }) {
 
   /* ---------- "Try saying" prompts ---------- */
   async function prompt(text) {
+    // The H05 page is open over the chat: its questions are answered there next.
+    if (plan.beachesOpen) return ctx.toast(beachesCopy.toast);
     if (busy || sheet) return;
     const state = getState();
     const p = promptsFor(ID, state.scenario, state.substep, state).find((x) => x.text === text);
@@ -413,6 +423,7 @@ function conversation({ log, input, ctx, run, message, seed, replayActions }) {
         return plan.choosePath(opt.id, text, "typed");
       }
       case "choice": return plan.choose(p.choice, text, "typed");
+      case "explore": return plan.explore(p.explore);
       default: return ctx.toast(`You said: “${text}”`);
     }
   }
@@ -427,6 +438,7 @@ function conversation({ log, input, ctx, run, message, seed, replayActions }) {
   function cleanup() {
     unsubscribe();
     sheet?.close();
+    plan.closeBeaches();
     tripCard?.destroy();
   }
 
@@ -435,6 +447,7 @@ function conversation({ log, input, ctx, run, message, seed, replayActions }) {
     add, userSays, myraTyping, run, stage, setBusy, record, ctx, input, log,
     get instant() { return instant; },
     isBusy: () => busy || !!sheet,
+    track: (card) => live.push(card),   // re-renders when family needs change
     openFamilyEdit,
     scrollTo: (sel) => {
       const target = log.querySelector(sel);

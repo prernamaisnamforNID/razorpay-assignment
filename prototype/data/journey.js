@@ -80,6 +80,15 @@ export const steps = [
         { text: "Let's pick places", action: "choice", choice: "places" },
         { text: "Keep it for later", action: "choice", choice: "keep" },
       ],
+      destination: [
+        { text: "Show me the beaches", action: "explore", explore: "beaches" },
+        { text: "What else is there to do?", action: "explore", explore: "todo" },
+      ],
+      // While the H05 Pondicherry page is open.
+      beaches: [
+        { text: "Which beach is calmest for a 3-year-old?", action: "toast" },
+        { text: "Why did you leave out Paradise Beach?", action: "toast" },
+      ],
     },
     input: true,
   },
@@ -93,27 +102,15 @@ export const steps = [
   {
     id: "h08", num: "↳", screen: "H08", name: "Itinerary draft", host: "h03", substeps: ["itinerary", "draft"], branch: true,
   },
+  // H04 continues the same chat (after "See what's in Pondicherry").
   {
-    id: "h04", num: "4", screen: "H04", name: "Destination",
-    title: "Chat · Pondicherry",
-    shows: ["“Planning around” strip", "Pondicherry destination card", "Rain note for the weekend"],
-    actions: ["Tap the Pondicherry card", "Explore beaches"],
-    prompts: [
-      "Will it rain that weekend?",
-      "Show me beaches that work for all of us.",
-    ],
-    input: true,
+    id: "h04", num: "4", screen: "H04", name: "Destination", host: "h03", substeps: ["destination"],
+    hint: "Pick what to explore first in the app, or try saying it.",
   },
+  // H05 is a bottom sheet over the H03 chat (opened from H04).
   {
-    id: "h05", num: "5", screen: "H05", name: "Beaches",
-    title: "Pondicherry · Beaches",
-    shows: ["Pondicherry page in a bottom sheet", "Beaches tab with fit tags", "Left out: Paradise Beach, with the reason"],
-    actions: ["Save beaches with ♥", "Switch tabs", "Drag the sheet down to close"],
-    prompts: [
-      "Which beach is calmest for a 3-year-old?",
-      "Why did you leave out Paradise Beach?",
-    ],
-    input: false,
+    id: "h05", num: "5", screen: "H05", name: "Beaches", host: "h03", substeps: ["beaches"],
+    hint: "Save beaches with ♥, then close the page to go back to the chat.",
   },
   {
     id: "h06a", num: "6", screen: "H06a", name: "Beach fit",
@@ -293,21 +290,23 @@ export const people = {
 export const peopleOrder = ["daughter", "mum", "papa", "you"];
 
 /* Every need Myra can note. Pills read `label`; in a group with more than one
-   person the understood card adds "(both)" / "(Papa)" automatically. */
+   person the understood card adds "(both)" / "(Papa)" automatically.
+   `strip` — label on H04's "Planning around" strip; needs without it are left off.
+   Needs with the same `join`, for the same person, share one pill: "Short walks, no stairs". */
 export const needs = {
   // daughter
   "nap-lunch": { label: "Naps after lunch", group: "daughter" },
   "nap-day": { label: "Naps in the day", group: "daughter" },
-  "sleep-journeys": { label: "Sleeps on long journeys", group: "daughter" },
-  "motion-winding": { label: "Motion sick on winding roads", group: "daughter" },
-  "motion": { label: "Motion sickness", group: "daughter" },
-  "picky": { label: "Picky eater", group: "daughter" },
+  "sleep-journeys": { label: "Sleeps on long journeys", group: "daughter", strip: "Sleeps on long journeys" },
+  "motion-winding": { label: "Motion sick on winding roads", group: "daughter", strip: "Gets motion sick" },
+  "motion": { label: "Motion sickness", group: "daughter", strip: "Gets motion sick" },
+  "picky": { label: "Picky eater", group: "daughter", strip: "Picky eater" },
   // Mum & Papa
-  "veg": { label: "Pure veg", group: "parents" },
-  "short-walks": { label: "Short walks", group: "parents" },
-  "no-stairs": { label: "No stairs", group: "parents" },
-  "early-dinners": { label: "Early dinners", group: "parents" },
-  "afternoon-rest": { label: "Afternoon rest", group: "parents" },
+  "veg": { label: "Pure veg", group: "parents", strip: "Pure veg" },
+  "short-walks": { label: "Short walks", group: "parents", strip: "Short walks", join: "mobility" },
+  "no-stairs": { label: "No stairs", group: "parents", strip: "No stairs", join: "mobility" },
+  "early-dinners": { label: "Early dinners", group: "parents", strip: "Early dinners" },
+  "afternoon-rest": { label: "Afternoon rest", group: "parents", strip: "Afternoon rest" },
   // you two
   "quiet-evening": { label: "One quiet evening", group: "you" },
   "cafe": { label: "A good café", group: "you" },
@@ -423,10 +422,11 @@ export const family = {
    COPY RULE still applies: no "drive" in Myra's copy before travel mode.
    ========================================================================== */
 
-/* Plan checklist (pinned under the chat header). State: state.plan[id] = "todo" | "draft" | "done". */
+/* Plan checklist (pinned under the chat header).
+   State: state.plan[id] = "todo" | "active" (in progress) | "draft" | "done". */
 export const planSteps = [
   { id: "family", label: "Family", todoIcon: "plan-check" },
-  { id: "places", label: "Places", todoIcon: "plan-map-pin" },
+  { id: "places", label: "Places", todoIcon: "plan-map-pin", activeIcon: "plan-map-pin-active" },
   { id: "travel", label: "Getting there", todoIcon: "plan-route" },
   { id: "stay", label: "Stay", todoIcon: "plan-bed" },
   { id: "days", label: "Days", todoIcon: "plan-calendar", draftIcon: "plan-calendar-draft", draftLabel: "Days · draft" },
@@ -435,7 +435,7 @@ export const planCopy = {
   stayToast: "Stay comes after places and travel.",
 };
 
-/* H03e — the three paths. `go`: "places" → H04, "itinerary" → H08a in the chat, "travel" → H07a. */
+/* H03e — the three paths. `go`: "places" → H04 and "itinerary" → H08a, both in this chat; "travel" → H07a. */
 export const paths = {
   ask: "Perfect, I've got everyone. Where would you like to start?",
   badge: "Most families start here",
@@ -445,6 +445,102 @@ export const paths = {
     { id: "itinerary", icon: "calendar-22", title: "Plan an itinerary", desc: "A day-by-day draft for Fri to Sun" },
     { id: "travel", icon: "route-22", title: "Check how to get there", desc: "Ways to travel from Bengaluru, compared on time and cost" },
   ],
+};
+
+/* H04 — Pondicherry, in the same chat (Figma 91:2). COPY RULE: never "drive" here.
+   Tapping H03e card 1 sends `userText`; a typed prompt sends what was typed. */
+export const destination = {
+  userText: "Show me what's in Pondicherry",
+  intro: "Here's Pondicherry, checked for your family of 5.",
+  strip: { title: "Planning around", edit: "Edit", none: "Nothing specific yet" },
+  card: {
+    photo: "assets/photos/pondicherry.jpg",
+    photoAlt: "Pondicherry from above: colourful houses along the rocky seafront promenade, with the pier behind.",
+    name: "Pondicherry",
+    tagline: "Bewitching French City",
+    knownFor: "Known for",
+    tags: [
+      { icon: "waves-13-blue", label: "Calm beaches" },
+      { icon: "landmark-13-blue", label: "French Quarter" },
+      { icon: "coffee-13-blue", label: "Cafés" },
+    ],
+    save: "Save Pondicherry",
+    explore: "Explore Pondicherry",
+    exploreToast: "Next: Pondicherry page",
+  },
+  rain: "Late Nov can be rainy in Pondicherry, so I'll keep an indoor backup for each day.",
+  ask: "What would you like to explore first?",
+  chips: [
+    { id: "beaches", label: "Explore beaches", icon: "waves-16-white", primary: true },
+    { id: "todo", label: "Things to do", icon: "landmark-16" },
+    { id: "stay", label: "Areas to stay", icon: "map-pin-16" },
+  ],
+  chipToast: "Coming next",
+};
+
+/* H05 — Pondicherry page, Beaches tab, as a bottom sheet over the chat (Figma 32:128).
+   Beach ids match state.savedBeaches and the scenario presets.
+   `crop` places the photo inside its 234 × 116 box like Figma: % of the box. */
+export const beachesPage = {
+  photo: "assets/photos/pondicherry.jpg",
+  photoAlt: "Pondicherry's seafront from above, with the pier.",
+  name: "Pondicherry",
+  tagline: "Bewitching French City",
+  checked: "Checked for your family of 5",
+  close: "Close Pondicherry page",
+  tabs: [
+    { id: "overview", label: "Overview" },
+    { id: "beaches", label: "Beaches" },
+    { id: "todo", label: "Things to do" },
+    { id: "stay", label: "Areas to stay" },
+  ],
+  activeTab: "beaches",
+  title: "Beaches that fit your family",
+  sub: "Checked against her motion sickness, Papa's knees and pure-veg food nearby",
+  beaches: [
+    {
+      id: "promenade", name: "Rock Beach", rating: "4.4",
+      photo: "assets/photos/rock-beach.jpg", crop: { left: 0, top: -90.5, width: 105.1, height: 250 },
+      photoAlt: "Rock Beach: a rocky shore beside a long, flat seafront promenade.",
+      fits: [
+        { ok: true, text: "Flat promenade, easy for Papa" },
+        { ok: true, text: "Pure-veg cafés nearby" },
+        { ok: false, text: "Rocky shore, no wading" },
+      ],
+    },
+    {
+      id: "auroville", name: "Auroville Beach", rating: "4.2",
+      photo: "assets/photos/auroville-beach.jpg", crop: { left: -6, top: -12.1, width: 106, height: 142.2 },
+      photoAlt: "Auroville Beach: a wide strip of soft sand and waves.",
+      fits: [
+        { ok: true, text: "Soft sand for her to play" },
+        { ok: true, text: "Short walk from parking" },
+        { ok: false, text: "Waves can be strong" },
+      ],
+    },
+    {
+      // No photo in Figma yet — the card shows the sky-to-sand gradient.
+      id: "serenity", name: "Serenity Beach", rating: "4.3",
+      distance: "15 min away", // Figma says "15 min drive" — no "drive" before travel mode is chosen
+      fits: [
+        { ok: true, text: "Quiet in the mornings" },
+        { ok: false, text: "Sandy path to the water" },
+      ],
+    },
+  ],
+  save: "Save {name}",
+  details: "See details",
+  seeAll: { title: "See all beaches", sub: "7 more, incl. left out" },
+  leftOut: {
+    title: "Left out: Paradise Beach",
+    reason: "Reached only by boat, which may upset her motion sickness.",
+    action: "Show anyway",
+    toast: "Paradise Beach stays off the list for now",
+  },
+  context: "· Looking at beaches in Pondicherry",
+  chips: ["Compare these beaches", "Best time with a toddler", "Show on map"],
+  ask: "Ask anything about this place",
+  toast: "Coming next", // other tabs, See all, See details, chips
 };
 
 /* H08a — what Myra knows vs what's missing. `plan` items move to "known" once that plan step is done. */
@@ -467,7 +563,7 @@ export const itinerary = {
   ],
 };
 
-/* H08b — the rough draft. Slot `open.go`: "travel" → H07a, "places" → H04, "stay" → toast. */
+/* H08b — the rough draft. Slot `open.go`: "travel" → H07a, "places" → H04 in this chat, "stay" → toast. */
 export const draft = {
   working: {
     title: "Working on your request…",

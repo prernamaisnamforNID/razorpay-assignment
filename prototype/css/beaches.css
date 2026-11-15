@@ -1,0 +1,156 @@
+/* H05 · Pondicherry page, Beaches tab — a page sheet over the chat (Figma 32:128). */
+.bp { display: flex; flex-direction: column; height: 100%; }
+.bp__scroll { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; overscroll-behavior: contain; }
+.bp__scroll::-webkit-scrollbar { display: none; }
+
+/* Hero photo (32:137) — also the drag-to-close area */
+.bp__hero {
+  position: relative;
+  height: 190px;
+  overflow: hidden;
+  background: linear-gradient(#B8D6F2, #8CBADB 62%, #E3D6B8);
+  touch-action: none;
+  cursor: grab;
+}
+.bp__hero:active { cursor: grabbing; }
+.bp__hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.bp__grabber {
+  position: absolute; left: 50%; top: 8px;
+  width: 40px; height: 5px; margin-left: -20px;
+  border-radius: 3px; background: #fff; opacity: .9;
+}
+.bp__hero-dots { position: absolute; left: 150px; top: 160px; }
+.bp__close {
+  position: absolute; right: 14px; top: 18px;
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; padding: 0;
+  border: 0; border-radius: 18px;
+  background: var(--surface); box-shadow: var(--shadow);
+  cursor: pointer;
+}
+
+/* Title + tabs (32:150) */
+.bp__head { display: flex; flex-direction: column; gap: 12px; padding: 16px 0 12px; background: var(--surface); }
+.bp__titles { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 0 20px; }
+.bp__name { margin: 0; font: 900 26px/normal var(--font-app); color: var(--text); }
+.bp__tagline { margin: 0; font: 400 14px/normal var(--font-myra); color: var(--text-2); }
+.bp__checked {
+  display: inline-flex; align-items: center; gap: 4px; margin: 0;
+  padding: 4px 10px 4px 8px; border-radius: 10px; background: #EEF3FF;
+  font: 500 12px/normal var(--font-myra); color: var(--myra-indigo);
+}
+.bp__tabs { display: flex; gap: 8px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; }
+.bp__tabs::-webkit-scrollbar { display: none; }
+.bp__tab {
+  flex: none; padding: 7px 14px;
+  border: 1px solid transparent; border-radius: 10px; background: none;
+  font: 400 14px/normal var(--font-myra); color: var(--text-body); white-space: nowrap;
+  cursor: pointer;
+}
+.bp__tab.is-active { border-color: var(--blue); background: var(--blue-light); font-weight: 600; color: var(--blue); }
+
+/* Beaches (32:168 / 32:169) */
+.bp__content {
+  display: flex; flex-direction: column; gap: 12px;
+  margin: 12px 0; padding: 16px 0; background: var(--surface);
+}
+.bp__section-head { display: flex; flex-direction: column; gap: 2px; padding: 0 16px; }
+.bp__title { margin: 0; font: 600 18px/normal var(--font-myra); color: var(--text); }
+.bp__sub { margin: 0; font: 400 12px/17px var(--font-myra); color: var(--text-2); }
+
+.bp__row {
+  display: flex; align-items: stretch; gap: 12px;
+  margin: 0; padding: 0 16px 4px; list-style: none;
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 16px;
+  scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.bp__row::-webkit-scrollbar { display: none; }
+.bp__row > li { flex: none; scroll-snap-align: start; }
+
+.beach {
+  display: flex; flex-direction: column; width: 236px;
+  border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--surface);
+}
+.beach__photo {
+  position: relative; height: 116px; overflow: hidden;
+  background: linear-gradient(#B8D6F2, #8CBADB 62%, #E3D6B8);
+}
+.beach__img { position: absolute; max-width: none; object-fit: cover; }
+.beach__heart {
+  position: absolute; left: 10px; top: 10px;
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; padding: 0;
+  border: 0; border-radius: 15px; background: var(--surface); box-shadow: var(--shadow);
+  cursor: pointer;
+}
+.beach__rating {
+  position: absolute; right: 10px; top: 10px;
+  padding: 2px 6px; border-radius: 6px; background: var(--blue);
+  font: 600 12px/normal var(--font-myra); color: #fff;
+}
+.beach__body { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 12px 12px; }
+.beach__name { margin: 0; font: 600 15px/normal var(--font-myra); color: var(--text); }
+.beach__distance { display: flex; align-items: center; gap: 4px; margin: 0; font: 400 12px/normal var(--font-myra); color: var(--text-2); }
+.beach__fits { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.beach__fit {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px 3px 6px; border-radius: 8px; background: var(--good-bg);
+  font: 500 11px/normal var(--font-myra); color: var(--good); white-space: nowrap;
+}
+.beach__fit.is-warn { background: var(--warn-bg); color: var(--warn); }
+.bp__link {
+  padding: 0; border: 0; background: none;
+  font: 600 12px/normal var(--font-myra); color: var(--blue); cursor: pointer;
+}
+.beach__details { font-size: 13px; }
+
+/* "See all beaches" (92:2) */
+.bp__all { display: flex; width: 150px; }
+.bp__all-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  padding: 0; border: 1.5px dashed var(--myra-chip-border); border-radius: 16px; background: var(--myra-bubble);
+  font-family: var(--font-myra); cursor: pointer;
+}
+.bp__all-icon { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 22px; background: #fff; }
+.bp__all-title { font: 600 14px/normal var(--font-myra); color: var(--blue); }
+.bp__all-sub { font: 400 11px/normal var(--font-myra); color: var(--text-2); }
+
+/* Pager dots (92:9) */
+.bp__dots { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.bp__dot { width: 6px; height: 6px; border-radius: 3px; background: #D3D8DE; transition: width 200ms var(--ease-out), background-color 200ms ease; }
+.bp__dot.is-on { width: 18px; background: var(--blue); }
+
+/* Left out (32:263) */
+.bp__left-out {
+  display: flex; align-items: flex-start; gap: 8px;
+  margin: 0 16px; padding: 10px 12px; border-radius: 12px; background: #F5F6F8;
+}
+.bp__left-text { flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.bp__left-title { margin: 0; font: 600 13px/normal var(--font-myra); color: var(--text-body); }
+.bp__left-reason { margin: 0; font: 400 12px/17px var(--font-myra); color: var(--text-2); }
+
+/* Myra context bar (32:274) */
+.bp__myra {
+  flex: none; display: flex; flex-direction: column; gap: 10px;
+  padding: 12px 16px 24px; border-radius: 20px 20px 0 0;
+  background: var(--surface); box-shadow: var(--shadow);
+}
+.bp__myra-head { display: flex; align-items: center; gap: 6px; margin: 0; }
+.bp__myra-name {
+  display: inline-flex; align-items: flex-start; gap: 2px;
+  font: 600 14px/normal var(--font-myra);
+  background: var(--myra-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.bp__myra-context { font: 400 12px/normal var(--font-myra); color: var(--text-2); }
+.bp__chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
+.bp__chips::-webkit-scrollbar { display: none; }
+.bp__ask { display: flex; align-items: center; justify-content: space-between; }
+.bp__ask-field {
+  padding: 2px 0; border: 0; background: none; text-align: left;
+  font: 400 15px/normal var(--font-myra); color: var(--text-3); cursor: text;
+}
+.bp__speak { display: flex; padding: 0; border: 0; background: none; cursor: pointer; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bp__dot { transition: none; }
+}

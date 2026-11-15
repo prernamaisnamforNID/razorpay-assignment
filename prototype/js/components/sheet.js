@@ -1,28 +1,32 @@
 /* Draggable bottom sheet, mounted inside the app (phone screen).
    openSheet({ title, body, onClose }) → { el, close() }.
-   Drag the handle/header down to close; tap the dimmed backdrop or press Esc too. */
+   Drag the handle/header down to close; tap the dimmed backdrop or press Esc too.
+   variant "page" (H05): a full-height sheet with no header — `body` is the whole
+   sheet, and `dragFrom` (a selector inside it) is the area you drag down. */
 import { html, esc } from "../dom.js";
 import { reduceMotion } from "./chat.js";
 
 const DURATION = 280;
 const EASE = "cubic-bezier(.2,.8,.2,1)";
 
-export function openSheet({ title, body, onClose }) {
+export function openSheet({ title, body, onClose, variant = "panel", dragFrom = null }) {
   const app = document.querySelector(".app");
+  const page = variant === "page";
   const layer = html(`
     <div class="sheet-layer">
       <div class="sheet__scrim"></div>
-      <section class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}">
+      <section class="sheet${page ? " sheet--page" : ""}" role="dialog" aria-modal="true" aria-label="${esc(title)}">
+        ${page ? "" : `
         <div class="sheet__grip">
           <span class="sheet__handle" aria-hidden="true"></span>
           <h2 class="sheet__title">${esc(title)}</h2>
         </div>
-        <div class="sheet__body"></div>
+        <div class="sheet__body"></div>`}
       </section>
     </div>`);
   const sheet = layer.querySelector(".sheet");
   const scrim = layer.querySelector(".sheet__scrim");
-  layer.querySelector(".sheet__body").append(body);
+  (page ? sheet : layer.querySelector(".sheet__body")).append(body);
   app.append(layer);
 
   const motion = !reduceMotion.matches;
@@ -50,10 +54,11 @@ export function openSheet({ title, body, onClose }) {
   document.addEventListener("keydown", onKey);
   scrim.addEventListener("click", close);
 
-  // Drag down to close.
-  const grip = layer.querySelector(".sheet__grip");
+  // Drag down to close (buttons inside the drag area still just tap).
+  const grip = page ? sheet.querySelector(dragFrom) : layer.querySelector(".sheet__grip");
   let drag = null;
   grip.addEventListener("pointerdown", (e) => {
+    if (e.target.closest("button")) return;
     drag = { y: e.clientY, t: e.timeStamp, dy: 0 };
     grip.setPointerCapture(e.pointerId);
   });

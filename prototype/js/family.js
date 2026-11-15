@@ -47,6 +47,25 @@ export function personPills(personId) {
     .map((n) => ({ key: n.key, label: needLabel(n.key) }));
 }
 
+/* Pills for H04's "Planning around" strip: one per need that has a `strip` label,
+   on the first person it applies to. Needs with the same `join` for the same person
+   share a pill ("Short walks, no stairs"). Returns [{ person, label }]. */
+export function stripPills() {
+  const out = [];
+  getState().needs.forEach((n) => {
+    const def = NEEDS[n.key];
+    if (!def?.strip || !n.who.length) return;
+    const person = n.who[0];
+    const pill = out.find((p) => p.person === person && ((def.join && p.join === def.join) || p.labels.includes(def.strip)));
+    if (!pill) out.push({ person, join: def.join, labels: [def.strip] });
+    else if (!pill.labels.includes(def.strip)) pill.labels.push(def.strip);
+  });
+  return out.map((p) => ({
+    person: p.person,
+    label: p.labels.map((l, i) => (i ? l.toLowerCase() : l)).join(", "),
+  }));
+}
+
 /* "N things to keep in mind" — one per person per need. */
 export const needCount = () => getState().needs.reduce((sum, n) => sum + n.who.length, 0);
 

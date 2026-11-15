@@ -1,4 +1,4 @@
-/* Plan checklist (Figma 53:19) — pinned under a chat header.
+/* Plan checklist (Figma 53:19; "in progress" step 91:134) — pinned under a chat header.
    Reads state.plan; hidden until Family is done, then slides down.
    A step that changes state pops (1 → 1.08 → 1) and crossfades its colours. */
 import { html, esc } from "../dom.js";
@@ -20,11 +20,15 @@ export function planChecklist({ onStep }) {
     const plan = getState().plan;
     row.innerHTML = planSteps.map((s) => {
       const st = plan[s.id];
-      const ic = st === "done" ? "plan-check" : st === "draft" ? (s.draftIcon || s.todoIcon) : s.todoIcon;
+      const ic = st === "done" ? "plan-check"
+        : st === "draft" ? (s.draftIcon || s.todoIcon)
+        : st === "active" ? (s.activeIcon || s.todoIcon)
+        : s.todoIcon;
       const label = st === "draft" && s.draftLabel ? s.draftLabel : s.label;
+      const said = { todo: "to do", active: "in progress" }[st] || st;
       return `
         <button class="plan__step tap is-${st}" type="button" role="listitem" data-step="${s.id}"
-          aria-label="${esc(`${s.label}: ${st === "todo" ? "to do" : st}`)}">
+          aria-label="${esc(`${s.label}: ${said}`)}">
           ${icon(ic)}<span>${esc(label)}</span>
         </button>`;
     }).join("");

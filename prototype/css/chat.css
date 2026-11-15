@@ -592,3 +592,127 @@
 @media (prefers-reduced-motion: reduce) {
   .plan__step { transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease; }
 }
+
+/* ======================================================================
+   H04 · Pondicherry, in the same chat — Figma 91:2
+   ====================================================================== */
+
+/* Checklist step in progress (91:134) */
+.plan__step.is-active { border-color: var(--myra-chip-border); background: var(--blue-light); color: var(--blue); }
+
+/* "Planning around" strip (91:31) */
+.around {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #F7F9FC;
+}
+.around__head { display: flex; align-items: center; gap: 6px; }
+.around__title { font: 500 11px/normal var(--font-myra); letter-spacing: .8px; text-transform: uppercase; color: var(--text-2); }
+.around__edit {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 500 11px/normal var(--font-myra);
+  color: var(--blue);
+  cursor: pointer;
+}
+.around__pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.around__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 3px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  font: 400 12px/normal var(--font-myra);
+  color: var(--text-body);
+  white-space: nowrap;
+}
+.around__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  font: 600 10px/1 var(--font-myra);
+  color: var(--text-body);
+}
+.around__none { font: 400 12px/normal var(--font-myra); color: var(--text-3); }
+
+/* Destination card (91:57): photo, then a white info panel that overlaps it by 30px */
+.dest {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: var(--r-xl);
+  background: #6B7A6E;
+  box-shadow: var(--shadow);
+}
+.dest__photo { height: 190px; margin-bottom: -30px; overflow: hidden; border-radius: 16px; }
+.dest__photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.dest__info {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--surface);
+}
+.dest__top { display: flex; align-items: center; justify-content: space-between; align-self: stretch; }
+.dest__name { margin: 0; font: 600 19px/normal var(--font-myra); color: var(--text); }
+.dest__heart {
+  display: flex;
+  margin: -8px;
+  padding: 8px;          /* 36px tap area around the 20px heart */
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+.dest__tagline { margin: 0; font: 400 13px/normal var(--font-myra); color: var(--text-2); }
+.dest__label { margin: 0; font: 500 10px/normal var(--font-myra); letter-spacing: .8px; text-transform: uppercase; color: var(--text-3); }
+.dest__tags { display: flex; gap: 6px; align-self: stretch; margin: 0; padding: 0; overflow: hidden; list-style: none; } /* one row, clipped (91:72) */
+.dest__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 8px;
+  border-radius: 10px;
+  background: var(--blue-light);
+  font: 500 11px/normal var(--font-myra);
+  color: var(--blue);
+  white-space: nowrap;
+}
+.dest__explore {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 600 14px/normal var(--font-myra);
+  color: var(--blue);
+  cursor: pointer;
+}
+
+/* Rain note (91:96) */
+.rain-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #F5DEB3;
+  border-radius: var(--r-md);
+  background: #FFF8EC;
+}
+.rain-note p { flex: 1; margin: 0; font: 400 13px/19px var(--font-myra); color: var(--text-body); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
