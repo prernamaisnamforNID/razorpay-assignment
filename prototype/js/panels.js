@@ -1,7 +1,7 @@
 /* Environment panels: scenario switcher, journey tracker, "Try saying" prompts,
    and the phone-layout drawer. Renders into every [data-slot] it finds, so the
    same lists appear in the side panels and in the drawer. */
-import { steps, scenarios, ending, promptsFor, stepIndex, busyHint } from "../data/journey.js";
+import { steps, scenarios, ending, promptsFor, promptNoteFor, stepIndex, busyHint } from "../data/journey.js";
 import { getState, subscribe } from "./state.js";
 import { esc } from "./dom.js";
 
@@ -65,12 +65,14 @@ function renderPrompts(host, state) {
   }
   const prompts = promptsFor(step, scenario, substep, state);
   const hint = steps[stepIndex(step)]?.hint || "Tap inside the app for this step.";
+  const n = promptNoteFor(step, substep);
+  const note = n ? `<p class="prompts__note"><span aria-hidden="true">ⓘ</span> ${esc(n)}</p>` : "";
   if (busy) {
     host.innerHTML = `<p class="prompts__hint prompts__hint--busy">${esc(busyHint)}</p>`
-      + (prompts.length ? list(prompts, true) : "");
+      + (prompts.length ? note + list(prompts, true) : "");
     return;
   }
-  host.innerHTML = prompts.length ? list(prompts, false) : `<p class="prompts__hint">${esc(hint)}</p>`;
+  host.innerHTML = prompts.length ? note + list(prompts, false) : `<p class="prompts__hint">${esc(hint)}</p>`;
 }
 
 const list = (prompts, disabled) => `<ul class="prompts__list">${prompts.map((p) => `
@@ -89,14 +91,15 @@ function sync(state) {
     const i = stepIndex(b.dataset.jump);
     const isBranch = steps[i].branch;
     // A side branch is only "done" once it has been used (the draft exists).
-    const done = isBranch ? state.plan.days !== "todo" && i !== cur : i < cur;
+    // Steps reached once stay ticked (e.g. Map after going back to the chat).
+    const done = isBranch ? state.plan.days !== "todo" && i !== cur : i < cur || (i !== cur && state.visited.includes(b.dataset.jump));
     b.classList.toggle("is-done", done);
     b.classList.toggle("is-current", i === cur);
     if (i === cur) b.setAttribute("aria-current", "step");
     else b.removeAttribute("aria-current");
   });
 
-  const key = `${state.step}|${state.scenario}|${state.substep}|${state.busy}|${state.needs.map((n) => n.key).join()}`;
+  const key = `${state.step}|${state.scenario}|${state.substep}|${state.busy}|${state.needs.map((x) => x.key).join()}`;
   if (key !== lastPromptKey) {
     lastPromptKey = key;
     slots("prompts").forEach((host) => renderPrompts(host, state));

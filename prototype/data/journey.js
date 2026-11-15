@@ -80,15 +80,19 @@ export const steps = [
         { text: "Let's pick places", action: "choice", choice: "places" },
         { text: "Keep it for later", action: "choice", choice: "keep" },
       ],
+      // After H04, the demo skips ahead: the family has picked three beaches (see substepNotes).
       destination: [
-        { text: "Show me the beaches", action: "explore", explore: "beaches" },
-        { text: "What else is there to do?", action: "explore", explore: "todo" },
+        { text: "We've decided on Rock Beach, Auroville and Serenity.", action: "decide" },
       ],
       // While the H05 Pondicherry page is open.
       beaches: [
         { text: "Which beach is calmest for a 3-year-old?", action: "toast" },
         { text: "Why did you leave out Paradise Beach?", action: "toast" },
       ],
+    },
+    // Evaluator notes shown above the prompts (side panel + phone drawer) at a stage.
+    substepNotes: {
+      destination: "Assumption: the family has already explored the beaches and picked three. In the full flow they'd save them from the Beaches sheet (H05) and discuss with family first.",
     },
     input: true,
   },
@@ -112,24 +116,16 @@ export const steps = [
     id: "h05", num: "5", screen: "H05", name: "Beaches", host: "h03", substeps: ["beaches"],
     hint: "Save beaches with ♥, then close the page to go back to the chat.",
   },
+  // H06a continues the same chat once the beaches are decided.
   {
-    id: "h06a", num: "6", screen: "H06a", name: "Beach fit",
-    title: "Chat · beaches fit",
-    shows: ["Fit meter: 3 of 4 beach windows used", "Inline map of saved beaches", "Hint about where to stay"],
-    actions: ["Open map", "Share"],
-    prompts: [
-      "Share this with my husband.",
-      "Can we fit one more beach?",
-    ],
-    input: true,
+    id: "h06a", num: "6", screen: "H06a", name: "Beach fit", host: "h03", substeps: ["fit"],
+    hint: "Tap Open map on the map card to see the beaches full screen.",
   },
+  // H06b is its own screen; `chatStage` = the chat stage underneath it, so Back lands there after a jump.
   {
-    id: "h06b", num: "6b", screen: "H06b", name: "Map",
-    title: "Full-screen map",
-    shows: ["Full-screen map", "Filters", "Pin card for the selected beach"],
-    actions: ["Tap pins", "Back"],
+    id: "h06b", num: "6b", screen: "H06b", name: "Map", chatStage: "h06a",
     prompts: [],
-    hint: "Nothing to say here. Tap the pins in the app, then go back.",
+    hint: "Nothing to say here. Try the hotel buttons, or go back to the chat.",
     input: false,
   },
   {
@@ -543,6 +539,83 @@ export const beachesPage = {
   toast: "Coming next", // other tabs, See all, See details, chips
 };
 
+/* H06a — the beaches are decided; do they fit? (Figma 33:2). Same chat.
+   `saved` = beach ids (beachesPage.beaches) in pin order 1, 2, 3.
+   Map pins: x/y in px on the 358 × 210 inline map (pin's top-left, like Figma). */
+export const beachFit = {
+  saved: ["promenade", "auroville", "serenity"],
+  note: "You saved 3 beaches",
+  intro: "You saved 3 beaches. With her nap and Papa's pace, there are about 4 beach windows this trip, so all 3 fit with one to spare.",
+  meter: {
+    title: "Beach windows this trip",
+    used: "3 of 4 used",
+    slots: ["Fri eve", "Sat am", "Sat eve", "Sun am"],
+    filled: 3,
+    note: "Mornings and evenings only. Midday is her nap and too hot for Papa.",
+  },
+  map: {
+    title: "Your saved beaches",
+    sub: "3 saved · 1 left out",
+    open: "Open map",
+    alt: "Map of Pondicherry's coast: Auroville (2) and Serenity (3) north of town, Rock Beach (1) by White Town, and Paradise Beach (left out) to the south.",
+    labels: [
+      { text: "White Town", x: 85.92, y: 111.3, tone: "town" },
+      { text: "ECR", x: 187.76, y: 14.7, tone: "road" },
+      { text: "Bay of Bengal", x: 263.76, y: 94.5, tone: "sea" },
+    ],
+    pins: [
+      { n: 2, x: 201.8, y: -1.8 },
+      { n: 3, x: 212.54, y: 38.1 },
+      { n: 1, x: 223.28, y: 94.8 },
+    ],
+    leftOut: { x: 237.6, y: 153.6 },
+  },
+  tip: "Auroville and Serenity are both north of town. Staying near White Town keeps every beach under 30 min away. I'll use this when we pick a stay.",
+  ask: "Want to share these with the family before deciding?",
+  chips: [
+    { id: "share", label: "Share on WhatsApp", icon: "message-circle-16-white", primary: true },
+    { id: "explore", label: "Keep exploring", icon: "waves-16" },
+  ],
+  chipToast: "Coming next",
+};
+
+/* H06b v2 — full-screen map: saved beaches → hotels around them (Figma 94:2).
+   Pins and labels in px on the 390 × 844 map. */
+export const beachMap = {
+  title: "Beaches in Pondicherry",
+  back: "Back to chat",
+  layers: "Map layers",
+  alt: "Full map of Pondicherry's coast with your three saved beaches numbered 1 to 3 and Paradise Beach greyed out.",
+  filters: [
+    { id: "saved", label: "Saved (3)", icon: "heart-16", active: true },
+    { id: "fits", label: "All good fits" },
+    { id: "left", label: "Left out (1)" },
+  ],
+  labels: [
+    { text: "White Town", x: 93.6, y: 447.32, tone: "town", size: 13 },
+    { text: "ECR", x: 210.8, y: 59.08, tone: "road", size: 12 },
+    { text: "Bay of Bengal", x: 298.8, y: 379.8, tone: "sea", size: 12 },
+    { text: "Auroville", x: 46.8, y: 101.28, tone: "town", size: 12 },
+  ],
+  // tag = the white name label to the left of each pin
+  pins: [
+    { n: 2, name: "Auroville Beach", x: 217, y: 193.08, tagX: 107 },
+    { n: 3, name: "Serenity Beach", x: 228.7, y: 282.38, tagX: 121.7 },
+    { n: 1, name: "Rock Beach", x: 240.4, y: 409.28, tagX: 153.4 },
+  ],
+  leftOut: { name: "Paradise Beach", x: 256, y: 540.88, tagX: 145 },
+  legend: { saved: "Saved", left: "Left out" },
+  fit: "3 of 4 windows used",
+  card: {
+    text: "Your 3 beaches are along the coast, 5–25 min apart. Staying near White Town keeps every one under 30 min away.",
+    checks: ["Lift or ground floor", "Pure-veg nearby", "Within ₹31K left"],
+    primary: "Show hotels around these beaches",
+    near: ["Near Rock Beach", "Near Serenity"],
+  },
+  hotelsToast: "Next: stays near your beaches",
+  toast: "Coming next", // filters, layers
+};
+
 /* H08a — what Myra knows vs what's missing. `plan` items move to "known" once that plan step is done. */
 export const itinerary = {
   intro: "I can draft one now, but it'll be rough. I don't know your places or how you're getting there yet, and those shape each day.",
@@ -677,6 +750,11 @@ export function promptsFor(stepId, scenarioId, substep = null, state = null) {
   return list
     .map((p) => (typeof p === "string" ? { text: p } : p))
     .filter((p) => !p.requiresNeed || state?.needs?.some((n) => n.key === p.requiresNeed));
+}
+
+/* Evaluator note above the prompts at a chat stage, or null. */
+export function promptNoteFor(stepId, substep) {
+  return (substep && stepById(stepId)?.substepNotes?.[substep]) || null;
 }
 
 export function noteFor(stepId, scenarioId) {

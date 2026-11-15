@@ -2,8 +2,9 @@
    H08a what I know vs missing (53:115), H08b rough draft (53:236). Used by h03-chat-summary.js.
    `c` is the chat's shared toolkit: add, userSays, myraTyping, run, instant, stage,
    setBusy, isBusy, record, ctx, input, log, track, openFamilyEdit, scrollTo. */
-import { paths, destination, beachesPage as beachesCopy, itinerary, draft, planCopy, family as fam } from "../../data/journey.js";
-import { getState, setPlan } from "../state.js";
+import { paths, destination, beachesPage as beachesCopy, beachFit, itinerary, draft, planCopy, family as fam } from "../../data/journey.js";
+import { getState, setState, setPlan, markVisited } from "../state.js";
+import { systemNote, fitMeter, mapCard, savedList, myraTip } from "../components/beach-fit.js";
 import { openSheet } from "../components/sheet.js";
 import { beachesPage } from "../components/beaches-page.js";
 import { ms, myraText, myraLabel, fadeOut } from "../components/chat.js";
@@ -12,7 +13,7 @@ import { pathOptions, infoHint, knownCard, choiceChips, draftLabel, dayCard, sta
 import { planningStrip, destinationCard, rainNote } from "../components/destination.js";
 
 /* Paths built on another screen. "places" (H04) and "itinerary" (H08) stay in this chat. */
-const SCREEN = { travel: "h07a" };
+const SCREEN = { travel: "h07a", map: "h06b" };
 
 export function planFlow(c) {
   let itineraryShown = false;
@@ -87,6 +88,38 @@ export function planFlow(c) {
   function explore(id) {
     if (id === "beaches") return openBeaches();
     c.ctx.toast(destination.chipToast);
+  }
+
+  /* H06a — the family has decided on three beaches (the demo's skip-ahead prompt).
+     Saves them, ticks Places, then shows whether they fit. */
+  let fitShown = false;
+  async function decideBeaches(text, source) {
+    if (c.isBusy() || fitShown) return;
+    fitShown = true;
+    c.record({ type: "decide", text, source });
+    c.setBusy(true);
+    await c.userSays(text, source);
+    setState({ savedBeaches: [...beachFit.saved] });
+    setPlan("places", "done");
+    c.add(systemNote(beachFit.note), "none");
+
+    await c.myraTyping();
+    c.add(myraText(beachFit.intro));
+    await c.run.wait(ms("betweenBlocks"));
+    const meter = c.add(fitMeter(beachFit.meter));
+    if (!c.instant) meter.fill();
+    await c.run.wait(ms("betweenBlocks"));
+    c.add(mapCard(beachFit.map, { onOpen: () => goTo("map") }));
+    const names = beachFit.saved.map((id) => beachesCopy.beaches.find((b) => b.id === id).name);
+    c.add(savedList(names));
+    await c.run.wait(ms("betweenBlocks"));
+    c.add(myraTip(beachFit.tip));
+    await c.run.wait(ms("betweenBlocks"));
+    c.add(myraText(beachFit.ask));
+    c.add(choiceChips(beachFit.chips, { onChoose: () => c.ctx.toast(beachFit.chipToast) }));
+    c.stage({ substep: "fit" });
+    markVisited("h06a");
+    c.setBusy(false);
   }
 
   /* H05 — the Pondicherry page as a sheet over the dimmed chat, on the Beaches tab.
@@ -185,7 +218,7 @@ export function planFlow(c) {
   }
 
   return {
-    whereToStart, choosePath, choose, explore, planStep, openBeaches,
+    whereToStart, choosePath, choose, explore, planStep, openBeaches, decideBeaches,
     get beachesOpen() { return !!beaches; },
     closeBeaches: () => beaches?.close(),
   };

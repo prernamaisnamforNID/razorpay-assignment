@@ -45,17 +45,23 @@ function restart() {
 function startScenario(id) {
   hideCoach();
   resetState(id);
-  reset(pathTo(scenarioById(id).start));
+  openStep(scenarioById(id).start);
 }
 
 function jumpTo(id) {
   hideCoach();
+  openStep(id);
+}
+
+/* Open a tracker step. A stage inside a chat opens its screen and fast-forwards the
+   conversation there; a screen with a `chatStage` fast-forwards the chat under it. */
+function openStep(id) {
   const step = steps[stepIndex(id)];
-  // A stage inside a chat: open its screen and fast-forward the conversation there.
   if (step.host) {
     setState({ jumpTo: id });
     return reset(pathTo(step.host));
   }
+  setState({ jumpTo: step.chatStage || null }); // never leave a stale jump behind
   reset(pathTo(id));
 }
 

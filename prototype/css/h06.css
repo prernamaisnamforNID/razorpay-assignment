@@ -1,0 +1,262 @@
+/* H06a · Saved beaches — do they fit? (Figma 33:2, in the H03 chat)
+   H06b v2 · Full-screen map → hotels around the beaches (Figma 94:2). */
+
+/* ======================================================================
+   H06a chat blocks
+   ====================================================================== */
+
+/* System note (33:20) */
+.sys-note { display: flex; justify-content: center; }
+.sys-note__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: #F2F4F7;
+  font: 400 12px/normal var(--font-myra);
+  color: var(--text-2);
+}
+
+/* Beach windows meter (33:31) */
+.meter {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: #F7F9FC;
+}
+.meter__head { display: flex; align-items: center; justify-content: space-between; }
+.meter__title { display: flex; align-items: center; gap: 6px; font: 600 14px/normal var(--font-myra); color: var(--text); }
+.meter__used { font: 500 13px/normal var(--font-myra); color: var(--good); }
+.meter__slots { display: flex; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.meter__slot { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.meter__bar { display: block; width: 100%; height: 8px; overflow: hidden; border-radius: 4px; background: #DDE3EA; }
+.meter__bar i { display: none; height: 100%; border-radius: 4px; background: var(--myra-grad); transform-origin: left center; }
+.meter__slot.is-used .meter__bar i { display: block; }
+.meter__label { font: 400 10px/normal var(--font-myra); color: var(--text-2); white-space: nowrap; }
+.meter__note { margin: 0; font: 400 12px/17px var(--font-myra); color: var(--text-2); }
+
+/* Inline map card (33:93) */
+.map-card {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 2px 10px rgba(0,0,0,.12);
+}
+.map-card__head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+.map-card__text { flex: 1; min-width: 0; }
+.map-card__title { margin: 0; font: 600 15px/normal var(--font-myra); color: var(--text); }
+.map-card__sub { margin: 0; font: 400 12px/normal var(--font-myra); color: var(--text-2); }
+.app .map-card__open {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 14px;
+  background: var(--blue-light);
+  font: 500 12px/normal var(--font-myra);
+  color: var(--blue);
+  white-space: nowrap;
+}
+.map-card__map { position: relative; height: 210px; overflow: hidden; background: #EEF0E6; cursor: pointer; }
+.map-card__base { position: absolute; left: 0; top: 0; }
+
+/* Saved list (33:133) */
+.saved-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.saved-list__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 4px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  font: 400 12px/normal var(--font-myra);
+  color: var(--text-body);
+}
+.saved-list__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: var(--blue);
+  font: 600 10px/1 var(--font-myra);
+  color: #fff;
+}
+
+/* Myra tip (33:146) */
+.myra-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #D5E1FB;
+  border-radius: var(--r-md);
+  background: #EEF3FF;
+}
+.myra-tip p { flex: 1; margin: 0; font: 400 13px/19px var(--font-myra); color: var(--text-body); }
+
+/* ======================================================================
+   Maps — shared labels and pins (positions in px from data/journey.js)
+   ====================================================================== */
+.map-label { position: absolute; font: 500 10px/normal var(--font-myra); white-space: nowrap; pointer-events: none; }
+.map-label--town { color: #5B6470; }
+.map-label--road { color: #B07D10; }
+.map-label--sea { color: #5C8DB8; font-size: 9px; }
+.map-pin { position: absolute; filter: drop-shadow(0 2px 2px rgba(0,0,0,.2)); pointer-events: none; }
+.map-pin img { display: block; }
+.map-pin b {
+  position: absolute;
+  left: 0;
+  right: 0;
+  font: 600 11px/normal var(--font-myra);
+  color: #fff;
+  text-align: center;
+}
+.map-pin--26 b { top: 4.5px; }
+.map-pin--34 b { top: 6.5px; font-size: 14px; }
+.map-pin-grey { position: absolute; pointer-events: none; }
+.map-tag {
+  position: absolute;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--surface);
+  box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  font: 500 12px/normal var(--font-myra);
+  color: var(--text-body);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ======================================================================
+   H06b v2 full-screen map
+   ====================================================================== */
+/* The screen root itself (.screen = absolute, fills the phone); the map runs under the status bar. */
+.screen.bmap { padding-top: 0; background: #EEF0E6; font-family: var(--font-myra); }
+.bmap__map { position: absolute; left: 0; top: 0; width: 390px; height: 844px; }
+.bmap__base { position: absolute; left: 0; top: 0; }
+
+.bmap__top {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: calc(var(--status-h) + 10px) 12px 0;
+}
+.bmap__bar { display: flex; align-items: center; gap: 10px; }
+.app .bmap__round {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 2px 10px rgba(0,0,0,.12);
+}
+.bmap__title {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  font: 600 14px/normal var(--font-myra);
+  color: var(--text);
+}
+.bmap__filters { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.bmap__filters::-webkit-scrollbar { display: none; }
+.bmap__filter.is-active { border-color: var(--blue); background: var(--blue-light); font-weight: 500; color: var(--blue); }
+
+.bmap__legend {
+  position: absolute;
+  left: 12px;
+  top: 476px;
+  display: flex;
+  gap: 12px;
+  width: 140px;
+  padding: 6px 12px;
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  font: 400 11px/normal var(--font-myra);
+  color: var(--text-2);
+}
+.bmap__legend span { display: inline-flex; align-items: center; gap: 5px; }
+.bmap__legend i { width: 9px; height: 9px; border-radius: 50%; background: #9AA3AD; }
+.bmap__legend i.is-saved { background: var(--blue); }
+.bmap__fit {
+  position: absolute;
+  left: 215px;
+  top: 475px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 6px 12px 6px 10px;
+  border-radius: 14px;
+  background: var(--good-bg);
+  box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  font: 500 12px/normal var(--font-myra);
+  color: var(--good);
+}
+
+/* Bottom Myra card (94:115) */
+.bmap__card {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 517px;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px 16px 28px;
+  border-radius: 24px 24px 0 0;
+  background: #fff;
+  box-shadow: 0 -2px 16px rgba(0,0,0,.12);
+}
+.bmap__handle { align-self: center; width: 40px; height: 5px; border-radius: 3px; background: #D3D8DE; }
+.bmap__myra {
+  align-self: flex-start;
+  margin: 0;
+  font: 600 16px/normal var(--font-myra);
+  background: var(--myra-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.bmap__text { margin: 0; font: 400 14px/21px var(--font-myra); color: #111; }
+.bmap__checks { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.bmap__checks li {
+  padding: 3px 9px;
+  border-radius: 10px;
+  background: var(--good-bg);
+  font: 500 11px/normal var(--font-myra);
+  color: var(--good);
+  white-space: nowrap;
+}
+.app .bmap__primary {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 22px;
+  background: var(--myra-grad);
+  font: 500 14px/normal var(--font-myra);
+  color: #fff;
+  text-align: center;
+}
+.bmap__near { display: flex; gap: 8px; }
+.bmap__near-btn { flex: 1; min-width: 0; font-size: 13px; text-align: center; }

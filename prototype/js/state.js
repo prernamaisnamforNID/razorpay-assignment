@@ -12,6 +12,7 @@ const initial = () => ({
   needs: [],            // family needs: [{ key, who: ["papa", …] }] — see js/family.js
   plan: { family: "todo", places: "todo", travel: "todo", stay: "todo", days: "todo" }, // plan checklist
   jumpTo: null,         // tracker jump into the middle of a chat (e.g. "h03e")
+  visited: [],          // steps reached at least once (e.g. "h06a", "h06b") — ticked in the tracker
 });
 
 const state = initial();
@@ -48,6 +49,11 @@ export function toggleBeach(id) {
 export function setPlan(stepId, value) {
   if (state.plan[stepId] === value) return;
   setState({ plan: { ...state.plan, [stepId]: value } });
+}
+
+export function markVisited(stepId) {
+  if (state.visited.includes(stepId)) return;
+  setState({ visited: [...state.visited, stepId] });
 }
 
 export function setFirstMessage(text) {

@@ -113,8 +113,12 @@ function seedActions(target) {
     const opt = paths.options.find((o) => o.id === "itinerary");
     actions.push({ type: "path", id: opt.id, text: opt.title, source: "tapped" });
   }
-  if (target === "h04" || target === "h05") {
+  if (["h04", "h05", "h06a"].includes(target)) {
     actions.push({ type: "path", id: "places", text: destination.userText, source: "tapped" });
+  }
+  if (target === "h06a") {
+    const decide = promptsFor(ID, "happy", "destination").find((x) => x.action === "decide");
+    actions.push({ type: "decide", text: decide.text, source: "typed" });
   }
   return actions;
 }
@@ -308,6 +312,7 @@ function conversation({ log, input, ctx, run, message, seed, replayActions, open
     if (a.type === "confirmFamily") return confirmFamily(a.text, a.source);
     if (a.type === "path") return plan.choosePath(a.id, a.text, a.source);
     if (a.type === "choice") return plan.choose(a.id, a.text, a.source);
+    if (a.type === "decide") return plan.decideBeaches(a.text, a.source);
   }
 
   /* ---------- Edit sheets ---------- */
@@ -424,6 +429,7 @@ function conversation({ log, input, ctx, run, message, seed, replayActions, open
       }
       case "choice": return plan.choose(p.choice, text, "typed");
       case "explore": return plan.explore(p.explore);
+      case "decide": return plan.decideBeaches(text, "typed");
       default: return ctx.toast(`You said: “${text}”`);
     }
   }

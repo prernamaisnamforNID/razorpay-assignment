@@ -166,6 +166,17 @@ body.env {
 .prompt:hover { border-color: var(--env-ink-3); }
 .prompt:active { transform: scale(.98); }
 .prompts__hint { margin: 0 0 12px; font-size: 13px; line-height: 1.55; color: var(--env-ink-2); }
+/* Evaluator note above the prompts (e.g. the "beaches already decided" assumption) */
+.prompts__note {
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  border: 1px solid #F5DEB3;
+  border-radius: 10px;
+  background: #FFF8EC;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #6B4A12;
+}
 
 /* ---------- Phone mockup ---------- */
 .device-fit { position: relative; flex: none; }

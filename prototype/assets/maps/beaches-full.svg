@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="390" height="844" viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Map base (placeholder)" clip-path="url(#clip0_0_26)">
+<path id="Vector" d="M177.2 422H80.2C74.6771 422 70.2 426.477 70.2 432V580.8C70.2 586.323 74.6771 590.8 80.2 590.8H177.2C182.723 590.8 187.2 586.323 187.2 580.8V432C187.2 426.477 182.723 422 177.2 422Z" fill="#E3E6DA"/>
+<path id="Vector_2" d="M280.8 0C268.8 168.8 294.8 295.4 276.8 422C258.8 548.6 290.8 675.2 282.8 844H390V0H280.8Z" fill="#BFDDF5"/>
+<path id="Vector_3" d="M240.8 0C230.8 211 250.8 337.6 234.8 464.2C218.8 590.8 242.8 717.4 230.8 844" stroke-width="4" stroke="#F6C95E"/>
+<path id="Vector_4" d="M0 523.28C97.5 506.4 156 523.28 236.8 506.4" stroke-width="5" stroke="white"/>
+<path id="Vector_5" d="M39 0C78 253.2 58.5 506.4 109.2 844" stroke-width="4" stroke="white"/>
+<path id="Vector_6" d="M19.5 211C97.5 236.32 156 185.68 236.8 202.56" stroke-width="3" stroke="white"/>
+<path id="Vector_7" d="M124.8 751.16C146.339 751.16 163.8 724.709 163.8 692.08C163.8 659.451 146.339 633 124.8 633C103.261 633 85.8 659.451 85.8 692.08C85.8 724.709 103.261 751.16 124.8 751.16Z" fill="#D6E8C8"/>
+</g>
+<defs>
+<clipPath id="clip0_0_26">
+<rect width="390" height="844" fill="white"/>
+</clipPath>
+</defs>
+</svg>
